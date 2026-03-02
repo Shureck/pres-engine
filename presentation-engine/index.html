@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeSlides — Интерактивные презентации</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/slides.css">
+    <link rel="stylesheet" href="css/code-highlight.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800;900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- ============ ЭКРАН ЗАГРУЗКИ ============ -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loader-content">
+            <div class="loader-icon">
+                <svg viewBox="0 0 100 100" class="loader-svg">
+                    <polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="none" stroke="url(#loaderGrad)" stroke-width="2"/>
+                    <defs>
+                        <linearGradient id="loaderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#6C5CE7"/>
+                            <stop offset="100%" style="stop-color:#00CDAC"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <div class="loader-text">Загрузка презентации...</div>
+            <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+        </div>
+    </div>
+
+    <!-- ============ ГЛАВНАЯ СТРАНИЦА (ВЫБОР ПРЕЗЕНТАЦИИ) ============ -->
+    <div id="home-screen" class="home-screen hidden">
+        <header class="home-header">
+            <div class="home-logo">
+                <div class="logo-icon">
+                    <span class="logo-bracket">&lt;</span><span class="logo-slash">/</span><span class="logo-bracket">&gt;</span>
+                </div>
+                <h1>CodeSlides</h1>
+                <span class="home-subtitle">Интерактивные презентации по программированию</span>
+            </div>
+        </header>
+        <main class="home-main">
+            <div class="home-actions">
+                <button class="btn-load-file" id="btn-load-file">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    Загрузить JSON файл
+                </button>
+                <input type="file" id="file-input" accept=".json" hidden>
+                <div class="drop-zone" id="drop-zone">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.5">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="12" y1="18" x2="12" y2="12"/>
+                        <line x1="9" y1="15" x2="12" y2="12"/>
+                        <line x1="15" y1="15" x2="12" y2="12"/>
+                    </svg>
+                    <p>Перетащите JSON файл сюда</p>
+                    <span>или нажмите кнопку выше</span>
+                </div>
+            </div>
+            <div class="presentations-grid" id="presentations-grid">
+                <!-- Сюда добавляются карточки доступных презентаций -->
+            </div>
+        </main>
+    </div>
+
+    <!-- ============ ЭКРАН ПРЕЗЕНТАЦИИ ============ -->
+    <div id="presentation-screen" class="presentation-screen hidden">
+        <!-- Верхняя панель -->
+        <header class="pres-header" id="pres-header">
+            <button class="btn-icon btn-home" id="btn-back-home" title="На главную">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                    <polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+            </button>
+            <div class="pres-title-bar">
+                <span class="pres-title" id="pres-title">Название презентации</span>
+                <span class="pres-lecture" id="pres-lecture"></span>
+            </div>
+            <div class="pres-header-right">
+                <div class="slide-counter">
+                    <span id="current-slide-num">1</span>
+                    <span class="slide-counter-sep">/</span>
+                    <span id="total-slides-num">1</span>
+                </div>
+                <div class="zoom-controls" title="Масштаб">
+                    <button class="btn-icon btn-zoom-out" id="btn-zoom-out" aria-label="Уменьшить">−</button>
+                    <span class="zoom-value" id="zoom-value">100%</span>
+                    <button class="btn-icon btn-zoom-in" id="btn-zoom-in" aria-label="Увеличить">+</button>
+                </div>
+                <button class="btn-icon btn-toc" id="btn-toc" title="Содержание">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+                        <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+                    </svg>
+                </button>
+                <button class="btn-icon btn-theme" id="btn-theme" title="Сменить тему">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                    </svg>
+                </button>
+                <button class="btn-icon btn-fullscreen" id="btn-fullscreen" title="Полный экран">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+                        <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Прогресс-бар -->
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+
+        <!-- Область слайдов -->
+        <main class="slides-viewport" id="slides-viewport">
+            <div class="slides-container" id="slides-container">
+                <!-- Слайды генерируются динамически -->
+            </div>
+        </main>
+
+        <!-- Навигация -->
+        <nav class="pres-nav">
+            <button class="btn-nav btn-prev" id="btn-prev" title="Предыдущий слайд (←)">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6"/>
+                </svg>
+            </button>
+            <div class="slide-dots" id="slide-dots">
+                <!-- Точки навигации -->
+            </div>
+            <button class="btn-nav btn-next" id="btn-next" title="Следующий слайд (→)">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 18 15 12 9 6"/>
+                </svg>
+            </button>
+        </nav>
+
+        <!-- Панель содержания (боковая) -->
+        <aside class="toc-panel" id="toc-panel">
+            <div class="toc-header">
+                <h3>Содержание</h3>
+                <button class="btn-icon btn-close-toc" id="btn-close-toc">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="toc-list" id="toc-list">
+                <!-- Содержание генерируется -->
+            </div>
+        </aside>
+        <div class="toc-overlay" id="toc-overlay"></div>
+
+        <!-- Мини-карта навигации (снизу) -->
+        <div class="minimap" id="minimap">
+            <!-- Миниатюры слайдов -->
+        </div>
+    </div>
+
+    <!-- ============ МОДАЛЬНЫЕ ОКНА ============ -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal" id="modal">
+            <div class="modal-header">
+                <h3 id="modal-title">Заголовок</h3>
+                <button class="btn-icon btn-close-modal" id="btn-close-modal">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body" id="modal-body"></div>
+        </div>
+    </div>
+
+    <!-- Уведомления -->
+    <div class="notifications" id="notifications"></div>
+
+    <script src="js/code-highlighter.js"></script>
+    <script src="js/slide-renderer.js"></script>
+    <script src="js/presentation-engine.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+/* ========== SYNTAX HIGHLIGHTING (Catppuccin-inspired) ========== */
+
+/* Keywords */
+.hl-keyword {
+    color: #cba6f7;
+    font-weight: 500;
+}
+
+/* Types */
+.hl-type {
+    color: #f9e2af;
+}
+
+/* Strings */
+.hl-string {
+    color: #a6e3a1;
+}
+
+/* Numbers */
+.hl-number {
+    color: #fab387;
+}
+
+/* Comments */
+.hl-comment {
+    color: #6c7086;
+    font-style: italic;
+}
+
+/* Functions */
+.hl-function {
+    color: #89b4fa;
+}
+
+/* Operators */
+.hl-operator {
+    color: #89dceb;
+}
+
+/* Punctuation */
+.hl-punctuation {
+    color: #9399b2;
+}
+
+/* Variables / identifiers */
+.hl-variable {
+    color: #cdd6f4;
+}
+
+/* Properties */
+.hl-property {
+    color: #74c7ec;
+}
+
+/* Boolean values */
+.hl-boolean {
+    color: #fab387;
+    font-weight: 500;
+}
+
+/* Annotations */
+.hl-annotation {
+    color: #f2cdcd;
+}
+
+/* Template expressions like ${...} */
+.hl-template {
+    color: #f5c2e7;
+}
+
+/* Special symbols */
+.hl-special {
+    color: #f38ba8;
+}
+
+/* Line numbers */
+.line-numbers {
+    display: inline-block;
+    padding-right: 16px;
+    border-right: 1px solid rgba(255,255,255,0.08);
+    margin-right: 16px;
+    text-align: right;
+    user-select: none;
+    color: #45475a;
+    min-width: 32px;
+}
+
+/* Highlighted line */
+.hl-line-highlight {
+    background: rgba(108, 92, 231, 0.15);
+    display: block;
+    margin: 0 -20px;
+    padding: 0 20px;
+    border-left: 3px solid var(--accent-primary);
+}
+
+/* Code with line numbers layout */
+.code-with-lines {
+    display: flex;
+}
+.code-line-numbers {
+    padding: 16px 12px 16px 16px;
+    border-right: 1px solid rgba(255,255,255,0.08);
+    user-select: none;
+    text-align: right;
+    color: #45475a;
+    font-family: var(--font-code);
+    font-size: 0.88em;
+    line-height: 1.7;
+    flex-shrink: 0;
+}
+.code-line-numbers span {
+    display: block;
+}
+.code-lines {
+    flex: 1;
+    padding: 16px 20px;
+    overflow-x: auto;
+}
+.code-lines pre {
+    font-family: var(--font-code);
+    font-size: 0.88em;
+    line-height: 1.7;
+    color: var(--text-code);
+    white-space: pre;
+    margin: 0;
+}

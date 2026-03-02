@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CodeSlides Presentation Format",
+  "description": "Стандартизированный формат JSON для интерактивных презентаций по программированию",
+  "type": "object",
+  "required": ["meta", "slides"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "description": "Метаданные презентации",
+      "properties": {
+        "title": { "type": "string", "description": "Название презентации" },
+        "subtitle": { "type": "string", "description": "Подзаголовок или номер лекции" },
+        "description": { "type": "string", "description": "Краткое описание" },
+        "author": { "type": "string", "description": "Автор" },
+        "date": { "type": "string", "description": "Дата создания" },
+        "language": { "type": "string", "description": "Язык программирования (kotlin, javascript, python)" },
+        "version": { "type": "string", "description": "Версия презентации" },
+        "tags": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["title"]
+    },
+    "slides": {
+      "type": "array",
+      "description": "Массив слайдов",
+      "items": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["title", "section", "content"],
+            "description": "Тип слайда: title (титульный), section (разделитель), content (контент)"
+          },
+          "title": { "type": "string" },
+          "subtitle": { "type": "string" },
+          "author": { "type": "string" },
+          "date": { "type": "string" },
+          "sectionNumber": { "type": "string" },
+          "animate": { "type": "boolean", "default": true },
+          "reference": { "type": "string", "description": "URL-ссылка внизу слайда" },
+          "content": {
+            "type": "array",
+            "description": "Массив контентных блоков",
+            "items": {
+              "type": "object",
+              "required": ["type"],
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "text", "code", "list", "ordered-list", "callout",
+                    "table", "columns", "image", "divider", "quote",
+                    "formula", "definition", "steps", "comparison", "link"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

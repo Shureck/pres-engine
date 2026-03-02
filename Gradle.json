@@ -1,0 +1,1652 @@
+{
+  "meta": {
+    "title": "Полный курс Gradle для Java",
+    "subtitle": "От основ до продвинутых техник: сборка, зависимости, тестирование, качество кода",
+    "description": "Исчерпывающее руководство по системе сборки Gradle для Java-проектов: от первого проекта до многомодульных приложений, плагинов качества кода, решения ошибок и оптимизации. Скрипты сборки — Kotlin DSL (build.gradle.kts).",
+    "author": "CodeSlides",
+    "date": "2025",
+    "language": "java",
+    "version": "1.0",
+    "tags": ["gradle", "build", "java", "dependencies", "testing", "checkstyle", "CI", "JUnit", "Maven"]
+  },
+  "slides": [
+
+    {
+      "type": "title",
+      "title": "Полный курс Gradle для Java",
+      "subtitle": "От основ до продвинутых техник: сборка, зависимости, тестирование, качество кода",
+      "author": "Скрипты сборки: Kotlin DSL · Код приложения: Java"
+    },
+
+    {
+      "type": "section",
+      "sectionNumber": "Часть 01",
+      "title": "Введение в Gradle"
+    },
+
+    {
+      "type": "content",
+      "title": "Что такое система сборки?",
+      "content": [
+        {
+          "type": "text",
+          "text": "**Система сборки** (build system) — это инструмент, который автоматизирует процесс превращения исходного кода в готовое приложение."
+        },
+        {
+          "type": "text",
+          "text": "Без системы сборки вам пришлось бы **вручную** выполнять десятки команд:"
+        },
+        {
+          "type": "ordered-list",
+          "items": [
+            "Скачать все зависимости (библиотеки)",
+            "Скомпилировать исходные файлы в правильном порядке",
+            "Запустить тесты",
+            "Упаковать результат в JAR/WAR/APK",
+            "Развернуть на сервере"
+          ]
+        },
+        {
+          "type": "callout",
+          "variant": "tip",
+          "title": "Аналогия",
+          "text": "Система сборки — это как **рецепт** для повара. Вместо того чтобы каждый раз вспоминать все шаги, вы описываете их один раз, а Gradle выполняет автоматически."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Что такое Gradle?",
+      "content": [
+        {
+          "type": "text",
+          "text": "**Gradle** — современная система автоматизации сборки с открытым исходным кодом, разработанная для гибкости и производительности."
+        },
+        {
+          "type": "table",
+          "headers": ["Характеристика", "Описание"],
+          "rows": [
+            ["Год создания", "2007 (первый релиз), стабильный с 2012"],
+            ["Язык конфигурации", "**Kotlin DSL** (build.gradle.kts) или **Groovy DSL** (build.gradle)"],
+            ["Области применения", "Java, Kotlin, Android, C++, Swift, JavaScript и др."],
+            ["Кто использует", "Google (Android), Netflix, LinkedIn, Spring Framework"],
+            ["Лицензия", "Apache License 2.0"]
+          ]
+        },
+        {
+          "type": "callout",
+          "variant": "info",
+          "title": "О чём этот курс",
+          "text": "**Скрипты сборки** пишем на **Kotlin DSL** (`build.gradle.kts`) — современный и рекомендуемый формат. **Исходный код приложения** — на **Java** (папки `src/main/java`, `src/test/java`). Так вы получаете типобезопасную конфигурацию и привычный Java-проект."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Gradle vs Maven vs Ant",
+      "content": [
+        {
+          "type": "table",
+          "headers": ["", "Gradle", "Maven", "Ant"],
+          "rows": [
+            ["Конфигурация", "Kotlin/Groovy (код)", "XML (pom.xml)", "XML (build.xml)"],
+            ["Производительность", "⚡ Быстрый (кэш, инкрементальная сборка)", "Средний", "Зависит от настройки"],
+            ["Гибкость", "Очень высокая", "Средняя (convention over config)", "Высокая но многословная"],
+            ["Управление зависимостями", "✅ Встроенное", "✅ Встроенное", "❌ Нужен Ivy"],
+            ["Кривая обучения", "Средняя", "Низкая", "Высокая"],
+            ["Android", "✅ Стандарт", "❌ Сложно", "❌"]
+          ]
+        },
+        {
+          "type": "callout",
+          "variant": "success",
+          "title": "Почему Gradle?",
+          "text": "Gradle сочетает **мощность кода** (в отличие от XML) с **соглашениями** (convention over configuration). Он значительно быстрее Maven благодаря кэшированию и инкрементальной сборке."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Установка Gradle",
+      "content": [
+        {
+          "type": "steps",
+          "steps": [
+            {
+              "title": "Способ 1: SDKMAN! (рекомендуется для Linux/macOS)",
+              "text": "`sdk install gradle` — установит последнюю версию"
+            },
+            {
+              "title": "Способ 2: Homebrew (macOS)",
+              "text": "`brew install gradle`"
+            },
+            {
+              "title": "Способ 3: Scoop (Windows)",
+              "text": "`scoop install gradle`"
+            },
+            {
+              "title": "Способ 4: Ручная установка",
+              "text": "Скачайте с gradle.org/releases, распакуйте, добавьте `bin/` в PATH"
+            }
+          ]
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "# Проверка установки\ngradle --version\n\n# Пример вывода:\n# Gradle 8.10\n# Build time: 2024-...\n# Kotlin:     2.0.0\n# JVM:        21.0.2",
+          "filename": "terminal"
+        },
+        {
+          "type": "callout",
+          "variant": "tip",
+          "title": "Gradle Wrapper",
+          "text": "На практике вы почти **никогда** не устанавливаете Gradle глобально. Вместо этого используется **Gradle Wrapper** (`gradlew`) — об этом далее."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Gradle Wrapper — зачем нужен?",
+      "content": [
+        {
+          "type": "text",
+          "text": "**Gradle Wrapper** — скрипт, который автоматически скачивает и использует **конкретную версию** Gradle для проекта."
+        },
+        {
+          "type": "list",
+          "items": [
+            "Все разработчики используют **одну и ту же** версию Gradle",
+            "Не нужно устанавливать Gradle глобально",
+            "Версия фиксируется в `gradle/wrapper/gradle-wrapper.properties`",
+            "CI/CD серверы автоматически получают нужную версию"
+          ]
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "# Вместо 'gradle' всегда используйте:\n./gradlew build        # Linux/macOS\ngradlew.bat build      # Windows\n\n# Обновить версию Wrapper:\n./gradlew wrapper --gradle-version 8.10",
+          "filename": "terminal"
+        },
+        {
+          "type": "callout",
+          "variant": "warning",
+          "title": "Золотое правило",
+          "text": "**Всегда** используйте `./gradlew` вместо `gradle`. Всегда коммитьте файлы Wrapper в Git."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Структура файлов Wrapper",
+      "content": [
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "project/\n├── gradlew              # Скрипт для Linux/macOS\n├── gradlew.bat          # Скрипт для Windows\n└── gradle/\n    └── wrapper/\n        ├── gradle-wrapper.jar        # Загрузчик\n        └── gradle-wrapper.properties # Конфигурация",
+          "filename": "структура"
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "# gradle/wrapper/gradle-wrapper.properties\ndistributionBase=GRADLE_USER_HOME\ndistributionPath=wrapper/dists\ndistributionUrl=https\\://services.gradle.org/distributions/gradle-8.10-bin.zip\nnetworkTimeout=10000\nzipStoreBase=GRADLE_USER_HOME\nzipStorePath=wrapper/dists",
+          "filename": "gradle-wrapper.properties"
+        },
+        {
+          "type": "callout",
+          "variant": "info",
+          "text": "Файл `gradle-wrapper.properties` определяет **точную версию** Gradle. Именно этот файл обеспечивает воспроизводимость сборки."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Кратко: Введение в Gradle",
+      "content": [
+        {
+          "type": "callout",
+          "variant": "info",
+          "title": "Линия повествования",
+          "text": "**Система сборки** автоматизирует компиляцию, тесты и упаковку. **Gradle** — гибкий и быстрый вариант с Kotlin DSL и поддержкой Java. Мы сравнили его с Maven и Ant, разобрали **установку** и главное — **Gradle Wrapper** (`./gradlew`): одна версия Gradle для всех, без глобальной установки. Дальше — создаём первый Java-проект."
+        }
+      ]
+    },
+
+    {
+      "type": "section",
+      "sectionNumber": "Часть 02",
+      "title": "Первый проект"
+    },
+
+    {
+      "type": "content",
+      "title": "Создание проекта — gradle init",
+      "content": [
+        {
+          "type": "text",
+          "text": "Команда **`gradle init`** в интерактивном режиме создаёт новый проект. Для **Java-приложения** выберите тип **application**, язык реализации **Java**, скрипт сборки **Kotlin** (build.gradle.kts), тестовый фреймворк **JUnit Jupiter**."
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "# Создаём пустую директорию и инициализируем проект\nmkdir my-project && cd my-project\ngradle init\n\n# Gradle задаст вопросы:\n# Select type of build:        application\n# Select implementation lang:  Java   ← для Java-проекта\n# Select build script DSL:     Kotlin\n# Select test framework:       JUnit Jupiter\n# Project name:                my-project\n# Source package:               com.example",
+          "filename": "terminal"
+        },
+        {
+          "type": "callout",
+          "variant": "tip",
+          "title": "Быстрый старт",
+          "text": "После `gradle init` появится папка `src/main/java` с примером класса и `src/test/java` с тестом. Сразу можно выполнить `./gradlew run` — приложение запустится."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Структура проекта Gradle",
+      "content": [
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "my-project/\n├── build.gradle.kts         # Скрипт сборки (конфигурация проекта)\n├── settings.gradle.kts      # Настройки проекта (имя, модули)\n├── gradlew / gradlew.bat    # Gradle Wrapper\n├── gradle/\n│   └── wrapper/             # Файлы Wrapper\n├── src/\n│   ├── main/\n│   │   ├── java/            # Исходный код Java\n│   │   ├── kotlin/          # Исходный код Kotlin\n│   │   └── resources/       # Ресурсы (конфиги, шаблоны)\n│   └── test/\n│       ├── java/            # Тесты\n│       └── resources/       # Тестовые ресурсы\n└── build/                   # Результаты сборки (генерируется)",
+          "filename": "структура"
+        },
+        {
+          "type": "callout",
+          "variant": "info",
+          "title": "Соглашение о структуре (Convention over Configuration)",
+          "text": "Для **Java** Gradle по умолчанию ищет код в **`src/main/java`**, тесты в **`src/test/java`**, ресурсы в **`src/main/resources`**. Соблюдая эту структуру, вы почти не настраиваете пути вручную — плагин `java` подхватывает их автоматически."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "settings.gradle.kts — настройки проекта",
+      "content": [
+        {
+          "type": "text",
+          "text": "Файл `settings.gradle.kts` определяет **имя проекта** и **подключённые модули**:"
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "// settings.gradle.kts\n\n// Имя корневого проекта\nrootProject.name = \"my-project\"\n\n// Для многомодульного проекта:\n// include(\"app\")\n// include(\"core\")\n// include(\"data\")",
+          "filename": "settings.gradle.kts"
+        },
+        {
+          "type": "callout",
+          "variant": "info",
+          "text": "Этот файл выполняется **первым** при сборке. Gradle использует его, чтобы понять, какие модули входят в проект."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "build.gradle.kts — минимальный пример для Java",
+      "content": [
+        {
+          "type": "text",
+          "text": "Ниже — **минимальная конфигурация** для Java-приложения: компиляция (**java**), запуск (**application**), зависимости из Maven Central, главный класс и JUnit 5 для тестов. Этого достаточно, чтобы собирать проект и запускать его через `./gradlew run`."
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "// build.gradle.kts\n\nplugins {\n    java                          // Плагин для компиляции Java\n    application                   // Плагин для запуска приложения\n}\n\nrepositories {\n    mavenCentral()                // Где искать зависимости\n}\n\ndependencies {\n    implementation(\"com.google.guava:guava:33.0.0-jre\") // Основная зависимость\n    testImplementation(\"org.junit.jupiter:junit-jupiter:5.10.2\") // Тестовая\n}\n\napplication {\n    mainClass.set(\"com.example.App\") // Главный класс (ваш Java-класс с main)\n}\n\ntasks.test {\n    useJUnitPlatform()            // Обязательно для JUnit 5\n}",
+          "filename": "build.gradle.kts",
+          "highlightLines": [3, 8, 12, 17, 21]
+        },
+        {
+          "type": "callout",
+          "variant": "tip",
+          "title": "Главный класс",
+          "text": "`mainClass` — полное имя **Java**-класса с методом `public static void main(String[] args)`. Например, для файла `src/main/java/com/example/App.java` указывают `com.example.App`."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Анатомия build.gradle.kts",
+      "content": [
+        {
+          "type": "steps",
+          "steps": [
+            {
+              "title": "plugins { }",
+              "text": "Подключает плагины — наборы задач и конвенций. `java` добавляет компиляцию, `application` — запуск."
+            },
+            {
+              "title": "repositories { }",
+              "text": "Указывает, **откуда** скачивать зависимости: Maven Central, Google, кастомные."
+            },
+            {
+              "title": "dependencies { }",
+              "text": "Перечисляет **библиотеки**, от которых зависит проект, с указанием scope (implementation, testImplementation и т.д.)."
+            },
+            {
+              "title": "application { }",
+              "text": "Конфигурация плагина application: указываем главный класс для `./gradlew run`."
+            },
+            {
+              "title": "tasks.test { }",
+              "text": "Настройка конкретной задачи (task). Здесь — использовать JUnit Platform для тестов."
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Основные команды Gradle",
+      "content": [
+        {
+          "type": "table",
+          "headers": ["Команда", "Описание"],
+          "rows": [
+            ["`./gradlew build`", "Компиляция + тесты + упаковка JAR"],
+            ["`./gradlew run`", "Запуск приложения (нужен плагин application)"],
+            ["`./gradlew test`", "Запуск тестов"],
+            ["`./gradlew clean`", "Удаление директории build/"],
+            ["`./gradlew tasks`", "Показать все доступные задачи"],
+            ["`./gradlew dependencies`", "Дерево зависимостей"],
+            ["`./gradlew build --info`", "Сборка с подробным логом"],
+            ["`./gradlew build --scan`", "Сборка + онлайн-отчёт о сборке"]
+          ]
+        },
+        {
+          "type": "callout",
+          "variant": "tip",
+          "title": "Комбинирование задач",
+          "text": "Можно выполнять несколько задач: `./gradlew clean build` — сначала очистит, потом соберёт."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Кратко: Первый проект",
+      "content": [
+        {
+          "type": "callout",
+          "variant": "info",
+          "title": "Линия повествования",
+          "text": "**gradle init** создаёт Java-приложение с выбором JUnit Jupiter и Kotlin DSL. Структура: **src/main/java**, **src/test/java**, **src/main/resources**. **settings.gradle.kts** задаёт имя и модули; **build.gradle.kts** — плагины (java, application), репозитории, зависимости, mainClass и useJUnitPlatform(). Основные команды: **build**, **run**, **test**, **clean**, **tasks**, **dependencies**. Дальше — как устроены задачи изнутри."
+        }
+      ]
+    },
+
+    {
+      "type": "section",
+      "sectionNumber": "Часть 03",
+      "title": "Задачи (Tasks)"
+    },
+
+    {
+      "type": "content",
+      "title": "Что такое Task?",
+      "content": [
+        {
+          "type": "text",
+          "text": "**Task** (задача) — это атомарная единица работы в Gradle. Вся сборка — это **граф задач**: каждая задача может зависеть от других. Gradle сам определяет порядок выполнения и пропускает уже выполненные (UP-TO-DATE)."
+        },
+        {
+          "type": "list",
+          "items": [
+            "**`compileJava`** — компилирует исходники из `src/main/java` в байткод",
+            "**`processResources`** — копирует файлы из `src/main/resources` в build",
+            "**`test`** — компилирует тесты и запускает JUnit (зависит от `compileTestJava`)",
+            "**`jar`** — упаковывает скомпилированные классы и ресурсы в JAR",
+            "**`build`** — полная сборка: компиляция, тесты, JAR (зависит от `jar`, `test` и др.)"
+          ]
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "# Посмотреть все задачи с описанием:\n./gradlew tasks --all\n\n# Посмотреть граф зависимостей задачи:\n./gradlew build --dry-run",
+          "filename": "terminal"
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Жизненный цикл сборки",
+      "content": [
+        {
+          "type": "text",
+          "text": "Gradle выполняет сборку в **три фазы**:"
+        },
+        {
+          "type": "steps",
+          "steps": [
+            {
+              "title": "Initialization (Инициализация)",
+              "text": "Gradle читает `settings.gradle.kts`, определяет, какие проекты участвуют в сборке"
+            },
+            {
+              "title": "Configuration (Конфигурация)",
+              "text": "Gradle выполняет **все** скрипты `build.gradle.kts`, строит граф задач (DAG — Directed Acyclic Graph)"
+            },
+            {
+              "title": "Execution (Выполнение)",
+              "text": "Gradle выполняет **только** запрошенные задачи и их зависимости в правильном порядке"
+            }
+          ]
+        },
+        {
+          "type": "callout",
+          "variant": "warning",
+          "title": "Важно!",
+          "text": "Фаза **Configuration** выполняется для **всех** задач, даже тех, которые не будут запущены. Поэтому не выполняйте тяжёлую работу в блоке конфигурации — используйте `doLast { }` или `doFirst { }`."
+        },
+        {
+          "type": "text",
+          "text": "Для **Java**: в Configuration читается `build.gradle.kts` и регистрируются задачи (`compileJava`, `test`, `jar` и др.). В Execution при `./gradlew build` выполняются только нужные: например `compileJava` → `processResources` → `classes` → `jar`, затем `test`."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Создание собственных задач",
+      "content": [
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "// build.gradle.kts\n\n// Простая задача\ntasks.register(\"hello\") {\n    group = \"custom\"             // Группа в ./gradlew tasks\n    description = \"Prints hello\" // Описание\n\n    doLast {\n        println(\"Hello, Gradle!\")\n    }\n}\n\n// Задача с зависимостью\ntasks.register(\"greet\") {\n    dependsOn(\"hello\")  // Сначала выполнится hello\n    doLast {\n        println(\"How are you?\")\n    }\n}",
+          "filename": "build.gradle.kts",
+          "highlightLines": [4, 8, 14, 15]
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "$ ./gradlew greet\n\n> Task :hello\nHello, Gradle!\n\n> Task :greet\nHow are you?",
+          "filename": "terminal"
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "doFirst vs doLast",
+      "content": [
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "tasks.register(\"demo\") {\n    // Это выполняется в фазе КОНФИГУРАЦИИ (всегда!)\n    println(\"Configuring demo task\")\n\n    doFirst {\n        // Выполняется ПЕРЕД основными действиями задачи\n        println(\"Before action\")\n    }\n\n    doLast {\n        // Выполняется ПОСЛЕ основных действий задачи\n        println(\"After action\")\n    }\n}",
+          "filename": "build.gradle.kts",
+          "highlightLines": [3, 6, 11]
+        },
+        {
+          "type": "callout",
+          "variant": "warning",
+          "title": "Типичная ошибка",
+          "text": "Код **вне** `doFirst`/`doLast` выполняется на этапе **конфигурации** — даже если задачу не запускали! Не размещайте там тяжёлую логику."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Задачи с типом (Typed Tasks)",
+      "content": [
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "// Задача копирования файлов\ntasks.register<Copy>(\"copyDocs\") {\n    from(\"src/docs\")\n    into(\"build/docs\")\n    include(\"**/*.md\")\n}\n\n// Задача удаления\ntasks.register<Delete>(\"cleanLogs\") {\n    delete(\"logs/\")\n}\n\n// Задача архивирования\ntasks.register<Zip>(\"zipSources\") {\n    from(\"src/\")\n    archiveFileName.set(\"sources.zip\")\n    destinationDirectory.set(layout.buildDirectory.dir(\"archives\"))\n}",
+          "filename": "build.gradle.kts",
+          "highlightLines": [2, 9, 14]
+        },
+        {
+          "type": "callout",
+          "variant": "info",
+          "title": "Встроенные типы задач",
+          "text": "`Copy`, `Delete`, `Zip`, `Tar`, `Jar`, `JavaExec`, `Exec`, `Test` — Gradle предоставляет множество готовых типов задач."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Кратко: Задачи (Tasks)",
+      "content": [
+        {
+          "type": "callout",
+          "variant": "info",
+          "title": "Линия повествования",
+          "text": "**Task** — атомарная единица работы; сборка = граф задач (compileJava, processResources, test, jar, build). Три фазы: **Initialization** → **Configuration** (все build.gradle.kts, без тяжёлой логики!) → **Execution**. Свои задачи: **register**, **dependsOn**, **doFirst**/**doLast**; типизированные — Copy, Delete, Zip. Дальше — откуда брать библиотеки и как их подключать."
+        }
+      ]
+    },
+
+    {
+      "type": "section",
+      "sectionNumber": "Часть 04",
+      "title": "Зависимости (Dependencies)"
+    },
+
+    {
+      "type": "content",
+      "title": "Репозитории — где искать библиотеки",
+      "content": [
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "// build.gradle.kts\n\nrepositories {\n    mavenCentral()    // Главный публичный репозиторий\n    google()          // Для Android-библиотек\n    mavenLocal()      // Локальный кэш ~/.m2/repository\n\n    // Кастомный репозиторий\n    maven {\n        url = uri(\"https://repo.mycompany.com/maven\")\n        credentials {\n            username = project.findProperty(\"repoUser\") as String? ?: \"\"\n            password = project.findProperty(\"repoPass\") as String? ?: \"\"\n        }\n    }\n}",
+          "filename": "build.gradle.kts",
+          "highlightLines": [4, 5, 6, 9]
+        },
+        {
+          "type": "callout",
+          "variant": "tip",
+          "title": "Порядок важен!",
+          "text": "Gradle ищет зависимости в репозиториях **по порядку**. Для большинства **Java**-библиотек достаточно **`mavenCentral()`** — ставьте его первым. **`google()`** — для Android; **`mavenLocal()`** — локальный кэш (~/.m2)."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Координаты зависимости",
+      "content": [
+        {
+          "type": "text",
+          "text": "Каждая зависимость идентифицируется **тремя координатами** (GAV — Group, Artifact, Version):"
+        },
+        {
+          "type": "formula",
+          "text": "group:artifact:version"
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "dependencies {\n    //       group               artifact    version\n    //       ↓                   ↓           ↓\n    implementation(\"com.google.guava:guava:33.0.0-jre\")\n    implementation(\"org.apache.commons:commons-lang3:3.14.0\")\n    implementation(\"com.fasterxml.jackson.core:jackson-databind:2.17.0\")\n}",
+          "filename": "build.gradle.kts",
+          "highlightLines": [4]
+        },
+        {
+          "type": "callout",
+          "variant": "info",
+          "title": "Где искать библиотеки для Java?",
+          "text": "**[search.maven.org](https://search.maven.org)** и **[mvnrepository.com](https://mvnrepository.com)** — поиск по названию. Скопируйте строку в формате **group:artifact:version** и вставьте в `dependencies { }` в нужную конфигурацию (implementation, testImplementation и т.д.)."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Конфигурации зависимостей (Scope)",
+      "content": [
+        {
+          "type": "table",
+          "headers": ["Конфигурация", "Компиляция", "Runtime", "Тесты", "Транзитивно"],
+          "rows": [
+            ["`implementation`", "✅", "✅", "✅", "❌ Скрыта от потребителей"],
+            ["`api`", "✅", "✅", "✅", "✅ Видна потребителям"],
+            ["`compileOnly`", "✅", "❌", "❌", "❌"],
+            ["`runtimeOnly`", "❌", "✅", "❌", "❌"],
+            ["`testImplementation`", "❌", "❌", "✅", "❌"],
+            ["`testRuntimeOnly`", "❌", "❌", "✅ (runtime)", "❌"],
+            ["`annotationProcessor`", "Обработка аннотаций", "❌", "❌", "❌"]
+          ]
+        },
+        {
+          "type": "callout",
+          "variant": "tip",
+          "title": "Правило выбора для Java",
+          "text": "В **одномодульном** проекте почти всегда достаточно **`implementation`** (основной код) и **`testImplementation`** (тесты). **`api`** нужен в **библиотеках и многомодульных проектах**, когда ваш публичный Java-код использует типы из зависимости и потребители вашего модуля тоже должны её видеть."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "implementation vs api — наглядно",
+      "content": [
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "// Модуль :core\nplugins {\n    `java-library`  // Нужен для 'api'\n}\n\ndependencies {\n    api(\"com.google.guava:guava:33.0.0-jre\")\n    // ↑ Guava видна ВСЕМ, кто зависит от :core\n\n    implementation(\"org.slf4j:slf4j-api:2.0.12\")\n    // ↑ SLF4J видна ТОЛЬКО внутри :core\n}",
+          "filename": "core/build.gradle.kts",
+          "highlightLines": [7, 10]
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "// Модуль :app\ndependencies {\n    implementation(project(\":core\"))\n    // :app может использовать Guava (api)\n    // :app НЕ может использовать SLF4J (implementation)\n}",
+          "filename": "app/build.gradle.kts"
+        },
+        {
+          "type": "callout",
+          "variant": "warning",
+          "text": "Чем меньше зависимостей в `api`, тем быстрее инкрементальная компиляция. Изменение `api`-зависимости перекомпилирует **все** зависимые модули."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Дерево зависимостей и конфликты версий",
+      "content": [
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "# Посмотреть дерево зависимостей:\n./gradlew dependencies --configuration runtimeClasspath\n\n# Пример вывода:\nruntimeClasspath\n+--- com.google.guava:guava:33.0.0-jre\n|    +--- com.google.guava:failureaccess:1.0.2\n|    +--- com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict\n|    +--- com.google.errorprone:error_prone_annotations:2.23.0\n|    \\--- com.google.j2objc:j2objc-annotations:2.8\n\\--- org.apache.commons:commons-lang3:3.14.0",
+          "filename": "terminal"
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "// Принудительная версия зависимости\nconfigurations.all {\n    resolutionStrategy {\n        force(\"com.google.guava:guava:33.0.0-jre\")\n    }\n}\n\n// Исключение транзитивной зависимости\ndependencies {\n    implementation(\"org.some:library:1.0\") {\n        exclude(group = \"org.unwanted\", module = \"module\")\n    }\n}",
+          "filename": "build.gradle.kts",
+          "highlightLines": [4, 11]
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Version Catalog — централизация версий",
+      "content": [
+        {
+          "type": "text",
+          "text": "Начиная с Gradle 7.0, рекомендуется использовать **Version Catalog** для централизованного управления версиями:"
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "# gradle/libs.versions.toml\n\n[versions]\nguava = \"33.0.0-jre\"\njunit = \"5.10.2\"\njackson = \"2.17.0\"\n\n[libraries]\nguava = { module = \"com.google.guava:guava\", version.ref = \"guava\" }\njunit-jupiter = { module = \"org.junit.jupiter:junit-jupiter\", version.ref = \"junit\" }\njackson-databind = { module = \"com.fasterxml.jackson.core:jackson-databind\", version.ref = \"jackson\" }\n\n[plugins]\nspring-boot = { id = \"org.springframework.boot\", version = \"3.2.4\" }",
+          "filename": "gradle/libs.versions.toml",
+          "highlightLines": [3, 4, 5, 9, 10, 11]
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "// build.gradle.kts — использование каталога\ndependencies {\n    implementation(libs.guava)\n    implementation(libs.jackson.databind)\n    testImplementation(libs.junit.jupiter)\n}",
+          "filename": "build.gradle.kts"
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Кратко: Зависимости (Dependencies)",
+      "content": [
+        {
+          "type": "callout",
+          "variant": "info",
+          "title": "Линия повествования",
+          "text": "**Репозитории** — откуда качать (mavenCentral, google, mavenLocal). **Координаты** — group:artifact:version. **Конфигурации**: implementation (основной код), api (для библиотек), testImplementation (тесты). Разобрали **implementation vs api** и **дерево зависимостей** (force, exclude). **Version Catalog** (libs.versions.toml) — единое место для версий. Дальше — плагины, которые добавляют задачи и конвенции."
+        }
+      ]
+    },
+
+    {
+      "type": "section",
+      "sectionNumber": "Часть 05",
+      "title": "Плагины"
+    },
+
+    {
+      "type": "content",
+      "title": "Что такое плагин Gradle?",
+      "content": [
+        {
+          "type": "text",
+          "text": "**Плагин** — набор задач, конвенций и конфигураций, упакованный для повторного использования. Для **Java-проекта** минимально нужны плагины **`java`** (компиляция, JAR) и при желании **`application`** (запуск через `./gradlew run`)."
+        },
+        {
+          "type": "list",
+          "items": [
+            "**`java`** — компиляция Java, JAR, структура src/main/java и src/test/java",
+            "**`java-library`** — как java + конфигурация `api` (для библиотек и многомодульных проектов)",
+            "**`application`** — задача `run`, дистрибутив, главный класс",
+            "**`maven-publish`** — публикация артефактов в Maven-репозиторий",
+            "**`checkstyle`** — проверка стиля Java-кода",
+            "**`jacoco`** — отчёт о покрытии кода тестами"
+          ]
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "plugins {\n    java                              // Core-плагин (встроен в Gradle)\n    application                       // Core-плагин\n    id(\"org.springframework.boot\") version \"3.2.4\"  // Community-плагин\n    kotlin(\"jvm\") version \"2.0.0\"     // Kotlin-плагин\n}",
+          "filename": "build.gradle.kts"
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Плагин java — подробно",
+      "content": [
+        {
+          "type": "text",
+          "text": "Плагин **`java`** — основа любого Java-проекта в Gradle. Он добавляет задачи компиляции (`compileJava`, `compileTestJava`), упаковки (`jar`), ожидает структуру `src/main/java` и `src/test/java`. Ниже — настройка версии Java и опций компилятора."
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "plugins {\n    java\n}\n\njava {\n    sourceCompatibility = JavaVersion.VERSION_21\n    targetCompatibility = JavaVersion.VERSION_21\n\n    toolchain {\n        languageVersion.set(JavaLanguageVersion.of(21))\n    }\n}\n\n// Настройка компилятора\ntasks.withType<JavaCompile> {\n    options.encoding = \"UTF-8\"\n    options.compilerArgs.addAll(listOf(\"-Xlint:all\", \"-Werror\"))\n}",
+          "filename": "build.gradle.kts",
+          "highlightLines": [6, 7, 10, 16, 17]
+        },
+        {
+          "type": "callout",
+          "variant": "tip",
+          "title": "Java Toolchain",
+          "text": "**Toolchain** указывает Gradle, какую версию Java использовать. Если нужная JDK не установлена, Gradle может её автоматически скачать. Так все в команде собирают проект **одной и той же** версией Java без ручной настройки JAVA_HOME."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Плагин application",
+      "content": [
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "plugins {\n    application\n}\n\napplication {\n    mainClass.set(\"com.example.App\")\n\n    // Аргументы JVM\n    applicationDefaultJvmArgs = listOf(\"-Xmx512m\", \"-Denv=dev\")\n}\n\n// Теперь доступны задачи:\n// ./gradlew run              — запуск приложения\n// ./gradlew installDist      — установка в build/install/\n// ./gradlew distZip          — ZIP-архив дистрибутива\n// ./gradlew distTar          — TAR-архив дистрибутива",
+          "filename": "build.gradle.kts",
+          "highlightLines": [6, 9]
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "# Передача аргументов приложению:\n./gradlew run --args=\"arg1 arg2 --flag\"",
+          "filename": "terminal"
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Кратко: Плагины",
+      "content": [
+        {
+          "type": "callout",
+          "variant": "info",
+          "title": "Линия повествования",
+          "text": "**Плагин** — набор задач и конвенций. Для Java: **java** (компиляция, JAR, src/main/java), **java-library** (+ api), **application** (run, mainClass). Разобрали настройку **java** (sourceCompatibility, **Java Toolchain**), **application** (mainClass, JVM-аргументы). Дальше — как настроить JUnit 5 и запускать тесты."
+        }
+      ]
+    },
+
+    {
+      "type": "section",
+      "sectionNumber": "Часть 06",
+      "title": "Тестирование"
+    },
+
+    {
+      "type": "content",
+      "title": "Настройка JUnit 5 для Java",
+      "content": [
+        {
+          "type": "text",
+          "text": "**JUnit 5** (Jupiter) — стандарт для unit-тестов в Java. Подключите зависимость в **testImplementation** и включите **`useJUnitPlatform()`** в задаче `test`. Иначе Gradle будет искать JUnit 4 и тесты не запустятся."
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "dependencies {\n    testImplementation(\"org.junit.jupiter:junit-jupiter:5.10.2\")\n    testImplementation(\"org.assertj:assertj-core:3.25.3\")  // Удобные assert'ы\n    testImplementation(\"org.mockito:mockito-core:5.11.0\")   // Моки\n}\n\ntasks.test {\n    useJUnitPlatform()  // Обязательно для JUnit 5!\n\n    // Настройки вывода\n    testLogging {\n        events(\"passed\", \"skipped\", \"failed\")\n        showExceptions = true\n        showCauses = true\n        showStackTraces = true\n        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL\n    }\n\n    // Запуск тестов параллельно\n    maxParallelForks = Runtime.getRuntime().availableProcessors() / 2\n}",
+          "filename": "build.gradle.kts",
+          "highlightLines": [8, 12, 20]
+        },
+        {
+          "type": "callout",
+          "variant": "info",
+          "title": "Где лежат тесты",
+          "text": "Классы тестов должны находиться в **`src/test/java`** и иметь имя вида `*Test.java` или совпадать с пакетом основного кода. Например, для `src/main/java/com/example/App.java` тест — `src/test/java/com/example/AppTest.java`."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Запуск тестов — команды",
+      "content": [
+        {
+          "type": "table",
+          "headers": ["Команда", "Описание"],
+          "rows": [
+            ["`./gradlew test`", "Запуск всех тестов"],
+            ["`./gradlew test --tests \"com.example.MyTest\"`", "Конкретный тестовый класс"],
+            ["`./gradlew test --tests \"*Test.myMethod\"`", "Конкретный метод"],
+            ["`./gradlew test --tests \"*integration*\"`", "По паттерну имени"],
+            ["`./gradlew test --rerun`", "Перезапуск даже пройденных тестов"],
+            ["`./gradlew test --fail-fast`", "Остановиться на первой ошибке"],
+            ["`./gradlew test -i`", "Подробный вывод (info)"]
+          ]
+        },
+        {
+          "type": "callout",
+          "variant": "info",
+          "title": "HTML-отчёт о тестах",
+          "text": "После `./gradlew test` откройте `build/reports/tests/test/index.html` — там красивый отчёт со всеми результатами."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "JaCoCo — покрытие кода тестами",
+      "content": [
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "plugins {\n    java\n    jacoco  // Плагин покрытия кода\n}\n\njacoco {\n    toolVersion = \"0.8.11\"\n}\n\ntasks.test {\n    useJUnitPlatform()\n    finalizedBy(tasks.jacocoTestReport)  // Отчёт после тестов\n}\n\ntasks.jacocoTestReport {\n    dependsOn(tasks.test)\n    reports {\n        xml.required.set(true)       // Для CI/CD\n        html.required.set(true)      // Для человека\n        csv.required.set(false)\n    }\n}\n\n// Проверка минимального покрытия\ntasks.jacocoTestCoverageVerification {\n    violationRules {\n        rule {\n            limit {\n                minimum = \"0.80\".toBigDecimal()  // Минимум 80%\n            }\n        }\n    }\n}",
+          "filename": "build.gradle.kts",
+          "highlightLines": [3, 12, 29]
+        },
+        {
+          "type": "callout",
+          "variant": "info",
+          "text": "Отчёт JaCoCo: `build/reports/jacoco/test/html/index.html`. Запуск проверки: `./gradlew jacocoTestCoverageVerification`."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Кратко: Тестирование",
+      "content": [
+        {
+          "type": "callout",
+          "variant": "info",
+          "title": "Линия повествования",
+          "text": "**JUnit 5**: testImplementation + **useJUnitPlatform()**, testLogging и maxParallelForks. **Тест-контейнеры** — для интеграционных тестов с БД. **JaCoCo** — покрытие кода: jacocoTestReport, jacocoTestCoverageVerification с лимитом (например 80%). Дальше — статический анализ: Checkstyle, PMD, SpotBugs."
+        }
+      ]
+    },
+
+    {
+      "type": "section",
+      "sectionNumber": "Часть 07",
+      "title": "Проверка качества кода"
+    },
+
+    {
+      "type": "content",
+      "title": "Checkstyle — проверка стиля Java",
+      "content": [
+        {
+          "type": "text",
+          "text": "**Checkstyle** — инструмент статического анализа **исходного кода Java**. Проверяет отступы, имена переменных и методов, длину строк, импорты, скобки и т.д. по выбранному стандарту (Google Java Style, Sun Code Conventions). Помогает держать код в едином стиле в команде."
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "plugins {\n    java\n    checkstyle  // Подключаем Checkstyle\n}\n\ncheckstyle {\n    toolVersion = \"10.14.2\"\n    configFile = file(\"config/checkstyle/checkstyle.xml\")\n    isIgnoreFailures = false   // Ломать сборку при нарушениях\n    maxWarnings = 0            // Никаких предупреждений!\n}",
+          "filename": "build.gradle.kts",
+          "highlightLines": [3, 7, 8, 9, 10]
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "# Запуск проверки:\n./gradlew checkstyleMain       # Основной код\n./gradlew checkstyleTest       # Тестовый код\n./gradlew check                # Всё: тесты + checkstyle + ...",
+          "filename": "terminal"
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Checkstyle — конфигурация Google Style",
+      "content": [
+        {
+          "type": "text",
+          "text": "Создайте файл `config/checkstyle/checkstyle.xml` с Google Java Style Guide:"
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "<?xml version=\"1.0\"?>\n<!DOCTYPE module PUBLIC\n    \"-//Checkstyle//DTD Checkstyle Configuration 1.3//EN\"\n    \"https://checkstyle.org/dtds/configuration_1_3.dtd\">\n\n<module name=\"Checker\">\n    <property name=\"charset\" value=\"UTF-8\"/>\n    <property name=\"severity\" value=\"error\"/>\n\n    <module name=\"TreeWalker\">\n        <!-- Отступы -->\n        <module name=\"Indentation\">\n            <property name=\"basicOffset\" value=\"4\"/>\n        </module>\n\n        <!-- Длина строки -->\n        <module name=\"LineLength\">\n            <property name=\"max\" value=\"120\"/>\n        </module>\n\n        <!-- Именование -->\n        <module name=\"MethodName\"/>\n        <module name=\"TypeName\"/>\n        <module name=\"ConstantName\"/>\n\n        <!-- Импорты -->\n        <module name=\"UnusedImports\"/>\n        <module name=\"AvoidStarImport\"/>\n\n        <!-- Скобки -->\n        <module name=\"NeedBraces\"/>\n        <module name=\"LeftCurly\"/>\n        <module name=\"RightCurly\"/>\n    </module>\n</module>",
+          "filename": "config/checkstyle/checkstyle.xml"
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Checkstyle — чтение отчётов об ошибках",
+      "content": [
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "$ ./gradlew checkstyleMain\n\n> Task :checkstyleMain FAILED\n\nFAILURE: Build failed with an exception.\n\n* What went wrong:\n  Execution failed for task ':checkstyleMain'.\n  > Checkstyle rule violations were found.\n    See the report at: build/reports/checkstyle/main.html",
+          "filename": "terminal"
+        },
+        {
+          "type": "steps",
+          "steps": [
+            {
+              "title": "Откройте HTML-отчёт",
+              "text": "Файл `build/reports/checkstyle/main.html` — наглядный отчёт с указанием файла, строки и правила"
+            },
+            {
+              "title": "Прочитайте описание нарушения",
+              "text": "Например: *'Line is longer than 120 characters'* или *'Missing Javadoc comment'*"
+            },
+            {
+              "title": "Исправьте код или настройте правило",
+              "text": "Если правило не подходит — отредактируйте `checkstyle.xml` или добавьте `@SuppressWarnings`"
+            }
+          ]
+        },
+        {
+          "type": "callout",
+          "variant": "tip",
+          "title": "Подавление отдельных предупреждений",
+          "text": "Добавьте в `checkstyle.xml` модуль `<module name=\"SuppressionFilter\">` с файлом исключений для случаев, когда правило неприменимо."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "PMD и SpotBugs — дополнительные анализаторы",
+      "content": [
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "plugins {\n    java\n    pmd       // Статический анализ паттернов\n}\n\npmd {\n    toolVersion = \"7.0.0\"\n    isConsoleOutput = true\n    rulesets = listOf(\n        \"category/java/bestpractices.xml\",\n        \"category/java/errorprone.xml\",\n        \"category/java/codestyle.xml\"\n    )\n}",
+          "filename": "build.gradle.kts — PMD"
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "plugins {\n    java\n    id(\"com.github.spotbugs\") version \"6.0.9\"  // Поиск багов\n}\n\nspotbugs {\n    toolVersion.set(\"4.8.3\")\n    effort.set(com.github.spotbugs.snom.Effort.MAX)\n    reportLevel.set(com.github.spotbugs.snom.Confidence.LOW)\n}",
+          "filename": "build.gradle.kts — SpotBugs"
+        },
+        {
+          "type": "table",
+          "headers": ["Инструмент", "Что проверяет"],
+          "rows": [
+            ["**Checkstyle**", "Стиль оформления: отступы, имена, длина строк"],
+            ["**PMD**", "Паттерны: неиспользуемый код, пустые блоки, сложность"],
+            ["**SpotBugs**", "Потенциальные баги: null pointer, ресурсы, concurrency"]
+          ]
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Кратко: Проверка качества кода",
+      "content": [
+        {
+          "type": "callout",
+          "variant": "info",
+          "title": "Линия повествования",
+          "text": "**Checkstyle** — стиль Java-кода (отступы, имена, длина строк); конфиг в config/checkstyle/checkstyle.xml, отчёт в build/reports/checkstyle/. **PMD** — паттерны и сложность; **SpotBugs** — потенциальные баги. Все входят в **./gradlew check**. Дальше — как собрать это в многомодульном проекте."
+        }
+      ]
+    },
+
+    {
+      "type": "section",
+      "sectionNumber": "Часть 08",
+      "title": "Многомодульные проекты"
+    },
+
+    {
+      "type": "content",
+      "title": "Зачем нужны модули?",
+      "content": [
+        {
+          "type": "list",
+          "items": [
+            "**Разделение ответственности** — каждый модуль решает свою задачу",
+            "**Быстрая сборка** — Gradle перекомпилирует только изменённые модули",
+            "**Переиспользование** — модуль `core` можно подключить в нескольких приложениях",
+            "**Инкапсуляция** — `implementation` зависимости скрыты от других модулей",
+            "**Командная работа** — разные команды работают с разными модулями"
+          ]
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "my-project/\n├── settings.gradle.kts      # Перечислены все модули\n├── build.gradle.kts         # Общая конфигурация\n├── app/                     # Модуль приложения\n│   ├── build.gradle.kts\n│   └── src/main/java/\n├── core/                    # Модуль бизнес-логики\n│   ├── build.gradle.kts\n│   └── src/main/java/\n└── data/                    # Модуль данных\n    ├── build.gradle.kts\n    └── src/main/java/",
+          "filename": "структура"
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Настройка многомодульного проекта",
+      "content": [
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "// settings.gradle.kts\nrootProject.name = \"my-project\"\n\ninclude(\"app\")\ninclude(\"core\")\ninclude(\"data\")",
+          "filename": "settings.gradle.kts"
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "// Корневой build.gradle.kts — общие настройки для всех модулей\nsubprojects {\n    apply(plugin = \"java\")\n\n    group = \"com.example\"\n    version = \"1.0.0\"\n\n    repositories {\n        mavenCentral()\n    }\n\n    java {\n        toolchain {\n            languageVersion.set(JavaLanguageVersion.of(21))\n        }\n    }\n\n    tasks.test {\n        useJUnitPlatform()\n    }\n}",
+          "filename": "build.gradle.kts (корень)"
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "// app/build.gradle.kts\nplugins {\n    application\n}\n\ndependencies {\n    implementation(project(\":core\"))  // Зависимость от модуля\n    implementation(project(\":data\"))\n}\n\napplication {\n    mainClass.set(\"com.example.app.Main\")\n}",
+          "filename": "app/build.gradle.kts",
+          "highlightLines": [7, 8]
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Convention Plugins — DRY для конфигурации",
+      "content": [
+        {
+          "type": "text",
+          "text": "Вместо `subprojects { }` рекомендуется использовать **Convention Plugins** — переиспользуемые скрипты настройки в `buildSrc/`:"
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "// buildSrc/build.gradle.kts\nplugins {\n    `kotlin-dsl`\n}\n\nrepositories {\n    mavenCentral()\n}",
+          "filename": "buildSrc/build.gradle.kts"
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "// buildSrc/src/main/kotlin/java-conventions.gradle.kts\nplugins {\n    java\n    checkstyle\n    jacoco\n}\n\nrepositories { mavenCentral() }\n\njava {\n    toolchain { languageVersion.set(JavaLanguageVersion.of(21)) }\n}\n\ncheckstyle { toolVersion = \"10.14.2\" }\n\ntasks.test { useJUnitPlatform() }",
+          "filename": "java-conventions.gradle.kts"
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "// core/build.gradle.kts — использование конвенции\nplugins {\n    id(\"java-conventions\")  // Наш Convention Plugin!\n    `java-library`\n}",
+          "filename": "core/build.gradle.kts"
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Кратко: Многомодульные проекты",
+      "content": [
+        {
+          "type": "callout",
+          "variant": "info",
+          "title": "Линия повествования",
+          "text": "**Модули** — разделение ответственности, быстрая инкрементальная сборка. **settings.gradle.kts**: include(\"app\", \"core\", \"data\"); **subprojects** или **Convention Plugins** в buildSrc — общая конфигурация. Зависимости между модулями: **implementation(project(\":core\"))**. Дальше — как ускорить сборку кэшем и настройками."
+        }
+      ]
+    },
+
+    {
+      "type": "section",
+      "sectionNumber": "Часть 09",
+      "title": "Оптимизация и кэширование"
+    },
+
+    {
+      "type": "content",
+      "title": "Как Gradle ускоряет сборку",
+      "content": [
+        {
+          "type": "steps",
+          "steps": [
+            {
+              "title": "Инкрементальная сборка",
+              "text": "Gradle отслеживает **входы и выходы** каждой задачи. Если они не изменились — задача пропускается (UP-TO-DATE)"
+            },
+            {
+              "title": "Build Cache",
+              "text": "Результаты задач кэшируются локально или удалённо. Даже после `clean`, если входы совпадают — результат берётся из кэша"
+            },
+            {
+              "title": "Daemon",
+              "text": "Gradle запускает **фоновый процесс** (daemon), который остаётся в памяти между сборками, экономя время запуска JVM"
+            },
+            {
+              "title": "Параллельное выполнение",
+              "text": "Независимые задачи и модули собираются **параллельно**"
+            },
+            {
+              "title": "Configuration Cache",
+              "text": "Кэширует результат **фазы конфигурации** — повторная сборка стартует мгновенно"
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Настройка кэша и параллелизма",
+      "content": [
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "# gradle.properties — настройки производительности\n\n# Включить Build Cache\norg.gradle.caching=true\n\n# Параллельная сборка модулей\norg.gradle.parallel=true\n\n# Количество воркеров\norg.gradle.workers.max=4\n\n# Configuration Cache (экспериментальный)\norg.gradle.configuration-cache=true\n\n# Память для Gradle Daemon\norg.gradle.jvmargs=-Xmx2g -XX:+HeapDumpOnOutOfMemoryError",
+          "filename": "gradle.properties",
+          "highlightLines": [4, 7, 13, 16]
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "# Профилирование сборки:\n./gradlew build --profile\n# Открыть build/reports/profile/profile-*.html\n\n# Или Build Scan (онлайн):\n./gradlew build --scan\n# Даёт ссылку на scans.gradle.com с детальной аналитикой",
+          "filename": "terminal"
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Кратко: Оптимизация и кэширование",
+      "content": [
+        {
+          "type": "callout",
+          "variant": "info",
+          "title": "Линия повествования",
+          "text": "**Build Cache** (org.gradle.caching=true) и **Configuration Cache** ускоряют повторные сборки. **gradle.properties**: parallel, workers.max, jvmargs. **--profile** — локальный отчёт; **--scan** — онлайн Build Scan. Дальше — частые ошибки и как их исправлять."
+        }
+      ]
+    },
+
+    {
+      "type": "section",
+      "sectionNumber": "Часть 10",
+      "title": "Типичные ошибки и их решение"
+    },
+
+    {
+      "type": "content",
+      "title": "Ошибка: Could not resolve dependency",
+      "content": [
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "FAILURE: Build failed with an exception.\n\n* What went wrong:\nCould not resolve all files for configuration ':compileClasspath'.\n> Could not find com.example:library:1.0.0.\n  Searched in the following locations:\n    - https://repo.maven.apache.org/maven2/...\n  Required by: project :",
+          "filename": "ошибка"
+        },
+        {
+          "type": "steps",
+          "steps": [
+            {
+              "title": "Проверьте координаты (GAV)",
+              "text": "Опечатка в group, artifact или version — самая частая причина. Проверьте на mvnrepository.com"
+            },
+            {
+              "title": "Проверьте репозитории",
+              "text": "Убедитесь, что нужный репозиторий подключён в `repositories { }`. Для Android — `google()`, для Spring — может понадобиться snapshots"
+            },
+            {
+              "title": "Проверьте сеть и прокси",
+              "text": "При работе через корпоративный прокси настройте `systemProp.http.proxyHost` в `gradle.properties`"
+            },
+            {
+              "title": "Очистите кэш",
+              "text": "`./gradlew build --refresh-dependencies` или удалите `~/.gradle/caches/`"
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+        "type": "content",
+        "title": "Ошибка: Incompatible types / версии Java",
+        "content": [
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "FAILURE: Build failed with an exception.\n\n* What went wrong:\nExecution failed for task ':compileJava'.\n> error: release version 21 not supported\n\n# Или:\n> class file has wrong version 65.0, should be 61.0",
+            "filename": "ошибка"
+          },
+          {
+            "type": "steps",
+            "steps": [
+              {
+                "title": "Проверьте текущую JDK",
+                "text": "`java -version` и `./gradlew --version` — убедитесь, что используется нужная версия"
+              },
+              {
+                "title": "Настройте Toolchain",
+                "text": "Используйте `java { toolchain { languageVersion.set(JavaLanguageVersion.of(21)) } }` — Gradle сам найдёт или скачает нужную JDK"
+              },
+              {
+                "title": "Проверьте JAVA_HOME",
+                "text": "Переменная окружения `JAVA_HOME` должна указывать на корректную JDK. Проверьте: `echo $JAVA_HOME`"
+              },
+              {
+                "title": "Проверьте совместимость зависимостей",
+                "text": "Библиотека могла быть скомпилирована под более новую Java. Обновите JDK или понизьте версию библиотеки"
+              }
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "tip",
+            "title": "Версии Java и class-файлов",
+            "text": "Java 8 = 52.0, Java 11 = 55.0, Java 17 = 61.0, Java 21 = 65.0. Ошибка *wrong version* означает, что class-файл скомпилирован более новой Java."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Ошибка: Task failed / Compilation error",
+        "content": [
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "FAILURE: Build failed with an exception.\n\n* What went wrong:\nExecution failed for task ':compileJava'.\n> Compilation failed; see the compiler error output for details.",
+            "filename": "ошибка"
+          },
+          {
+            "type": "steps",
+            "steps": [
+              {
+                "title": "Прочитайте полный вывод",
+                "text": "Запустите `./gradlew compileJava --info` или `--stacktrace` для подробностей"
+              },
+              {
+                "title": "Найдите строку с ошибкой",
+                "text": "Компилятор указывает файл и строку: `src/main/java/com/example/App.java:15: error: ...`"
+              },
+              {
+                "title": "Проверьте зависимости",
+                "text": "Если ошибка о missing class — возможно, не подключена нужная зависимость"
+              },
+              {
+                "title": "Очистите и пересоберите",
+                "text": "`./gradlew clean build` — иногда помогает при проблемах с инкрементальной компиляцией"
+              }
+            ]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Ошибка: Out of memory",
+        "content": [
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "FAILURE: Build failed with an exception.\n\n* What went wrong:\njava.lang.OutOfMemoryError: Java heap space\n\n# Или: GC overhead limit exceeded\n# Или: Metaspace",
+            "filename": "ошибка"
+          },
+          {
+            "type": "text",
+            "text": "Решение — увеличить память в `gradle.properties`:"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "# gradle.properties\n\n# Увеличить heap (по умолчанию 512m)\norg.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError\n\n# Для задачи компиляции отдельно:\n# tasks.withType<JavaCompile> { options.forkOptions.memoryMaximumSize = \"2g\" }",
+            "filename": "gradle.properties",
+            "highlightLines": [4]
+          },
+          {
+            "type": "callout",
+            "variant": "warning",
+            "title": "Не только память!",
+            "text": "Если OOM возникает часто — возможно, проблема в утечке памяти Gradle Daemon. Попробуйте `./gradlew --stop` для перезапуска демона."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Ошибка: Dependency conflict",
+        "content": [
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "# Симптом: NoSuchMethodError, ClassNotFoundException в runtime\n# Причина: две библиотеки тянут разные версии одной зависимости\n\n# Шаг 1: Найти конфликт\n./gradlew dependencies --configuration runtimeClasspath | grep \"->\"",
+            "filename": "terminal"
+          },
+          {
+            "type": "text",
+            "text": "Стрелка `->` означает, что Gradle **заменил** версию:"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "+--- com.fasterxml.jackson.core:jackson-databind:2.14.0 -> 2.17.0\n#                                                        ^^^^^^^  заменена!",
+            "filename": "вывод dependencies"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "// Решение 1: Принудительная версия\nconfigurations.all {\n    resolutionStrategy {\n        force(\"com.fasterxml.jackson.core:jackson-databind:2.17.0\")\n    }\n}\n\n// Решение 2: Строгая версия\ndependencies {\n    implementation(\"com.fasterxml.jackson.core:jackson-databind\") {\n        version { strictly(\"2.17.0\") }\n    }\n}\n\n// Решение 3: BOM (Bill of Materials)\ndependencies {\n    implementation(platform(\"com.fasterxml.jackson:jackson-bom:2.17.0\"))\n    implementation(\"com.fasterxml.jackson.core:jackson-databind\") // Версия из BOM\n}",
+            "filename": "build.gradle.kts",
+            "highlightLines": [4, 11, 17]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Ошибка: Build скрипт не работает после обновления Gradle",
+        "content": [
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "FAILURE: Build failed with an exception.\n\n* Where:\nBuild file 'build.gradle.kts' line: 12\n\n* What went wrong:\nAn exception occurred applying plugin [id 'com.example.plugin']\n> Could not create plugin of type 'MyPlugin'.",
+            "filename": "ошибка"
+          },
+          {
+            "type": "steps",
+            "steps": [
+              {
+                "title": "Прочитайте Release Notes",
+                "text": "На docs.gradle.org/current/release-notes.html описаны все breaking changes между версиями"
+              },
+              {
+                "title": "Проверьте совместимость плагинов",
+                "text": "Обновите community-плагины до версий, поддерживающих новый Gradle"
+              },
+              {
+                "title": "Замените deprecated API",
+                "text": "Запустите `./gradlew help --warning-mode all` — покажет все deprecated вызовы"
+              },
+              {
+                "title": "Обновляйте постепенно",
+                "text": "Не перепрыгивайте через несколько major-версий. Обновляйтесь последовательно: 7.x → 8.0 → 8.x"
+              }
+            ]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Отладка Gradle — полезные флаги",
+        "content": [
+          {
+            "type": "table",
+            "headers": ["Флаг", "Описание"],
+            "rows": [
+              ["`--info`", "Подробный лог (INFO level)"],
+              ["`--debug`", "Максимально подробный лог (осторожно — очень много вывода)"],
+              ["`--stacktrace`", "Показать полный stack trace при ошибке"],
+              ["`--warning-mode all`", "Показать все предупреждения и deprecated API"],
+              ["`--dry-run`", "Показать какие задачи будут выполнены, не выполняя их"],
+              ["`--scan`", "Создать Build Scan на scans.gradle.com с полной аналитикой"],
+              ["`--profile`", "Локальный HTML-отчёт о времени выполнения задач"],
+              ["`--refresh-dependencies`", "Принудительно обновить все зависимости из репозиториев"],
+              ["`--no-build-cache`", "Отключить кэш для этой сборки"],
+              ["`--continue`", "Продолжить сборку даже после ошибки в одной задаче"]
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "tip",
+            "title": "Build Scan — лучший инструмент отладки",
+            "text": "`./gradlew build --scan` создаёт детальный онлайн-отчёт: время каждой задачи, дерево зависимостей, использование кэша, системные свойства. Отправляйте ссылку коллегам для совместной отладки."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Кратко: Типичные ошибки и их решение",
+        "content": [
+          {
+            "type": "callout",
+            "variant": "info",
+            "title": "Линия повествования",
+            "text": "Разобрали **частые ошибки**: забытый useJUnitPlatform(), неправильный mainClass, проблемы с кодировкой и путями. При **обновлении Gradle** — Release Notes, совместимость плагинов, deprecated API (help --warning-mode all). **Флаги отладки**: --info, --stacktrace, --scan, --dry-run, --continue. Дальше — публикация артефактов и CI/CD."
+          }
+        ]
+      },
+  
+      {
+        "type": "section",
+        "sectionNumber": "Часть 11",
+        "title": "Публикация и CI/CD"
+      },
+  
+      {
+        "type": "content",
+        "title": "Публикация артефактов — maven-publish",
+        "content": [
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "plugins {\n    `java-library`\n    `maven-publish`\n}\n\ngroup = \"com.example\"\nversion = \"1.0.0\"\n\npublishing {\n    publications {\n        create<MavenPublication>(\"mavenJava\") {\n            from(components[\"java\"])\n\n            pom {\n                name.set(\"My Library\")\n                description.set(\"A cool library\")\n                url.set(\"https://github.com/example/my-library\")\n            }\n        }\n    }\n\n    repositories {\n        maven {\n            name = \"GitHubPackages\"\n            url = uri(\"https://maven.pkg.github.com/OWNER/REPO\")\n            credentials {\n                username = project.findProperty(\"gpr.user\") as String? ?: \"\"\n                password = project.findProperty(\"gpr.key\") as String? ?: \"\"\n            }\n        }\n    }\n}",
+            "filename": "build.gradle.kts",
+            "highlightLines": [3, 11, 12, 24, 25]
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "# Публикация:\n./gradlew publish\n\n# Публикация в локальный Maven:\n./gradlew publishToMavenLocal",
+            "filename": "terminal"
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Создание Fat JAR (Shadow JAR)",
+        "content": [
+          {
+            "type": "text",
+            "text": "**Fat JAR** (uber-jar) — JAR-файл, содержащий все зависимости. Удобен для деплоя — один файл содержит всё."
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "plugins {\n    java\n    id(\"com.github.johnrengelman.shadow\") version \"8.1.1\"\n}\n\ntasks.shadowJar {\n    archiveBaseName.set(\"my-app\")\n    archiveVersion.set(\"1.0.0\")\n    archiveClassifier.set(\"\")\n\n    manifest {\n        attributes(\"Main-Class\" to \"com.example.App\")\n    }\n\n    // Исключить ненужные файлы\n    exclude(\"META-INF/*.SF\")\n    exclude(\"META-INF/*.DSA\")\n    exclude(\"META-INF/*.RSA\")\n}",
+            "filename": "build.gradle.kts",
+            "highlightLines": [3, 7, 12]
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "# Сборка Fat JAR:\n./gradlew shadowJar\n# Результат: build/libs/my-app-1.0.0.jar\n\n# Запуск:\njava -jar build/libs/my-app-1.0.0.jar",
+            "filename": "terminal"
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Gradle в CI/CD (GitHub Actions)",
+        "content": [
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "# .github/workflows/build.yml\nname: Build & Test\n\non:\n  push:\n    branches: [ main ]\n  pull_request:\n    branches: [ main ]\n\njobs:\n  build:\n    runs-on: ubuntu-latest\n\n    steps:\n    - uses: actions/checkout@v4\n\n    - name: Set up JDK 21\n      uses: actions/setup-java@v4\n      with:\n        java-version: '21'\n        distribution: 'temurin'\n\n    - name: Setup Gradle\n      uses: gradle/actions/setup-gradle@v3\n\n    - name: Build\n      run: ./gradlew build\n\n    - name: Upload test results\n      if: always()\n      uses: actions/upload-artifact@v4\n      with:\n        name: test-results\n        path: build/reports/tests/",
+            "filename": ".github/workflows/build.yml",
+            "highlightLines": [17, 18, 19, 20, 21, 23, 24, 27]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Gradle в CI/CD — продвинутый пример",
+        "content": [
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "# .github/workflows/full-pipeline.yml\nname: Full Pipeline\n\non: [push, pull_request]\n\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n    - uses: actions/checkout@v4\n    - uses: actions/setup-java@v4\n      with: { java-version: '21', distribution: 'temurin' }\n    - uses: gradle/actions/setup-gradle@v3\n\n    - name: Compile\n      run: ./gradlew compileJava compileTestJava\n\n    - name: Checkstyle\n      run: ./gradlew checkstyleMain checkstyleTest\n\n    - name: Unit Tests + Coverage\n      run: ./gradlew test jacocoTestReport jacocoTestCoverageVerification\n\n    - name: Build JAR\n      run: ./gradlew jar\n\n    - name: Upload coverage to Codecov\n      uses: codecov/codecov-action@v4\n      with:\n        files: build/reports/jacoco/test/jacocoTestReport.xml",
+            "filename": ".github/workflows/full-pipeline.yml",
+            "highlightLines": [16, 19, 22, 25]
+          },
+          {
+            "type": "callout",
+            "variant": "info",
+            "title": "Gradle в CI — советы",
+            "text": "Используйте `gradle/actions/setup-gradle@v3` — он автоматически кэширует `.gradle/` между запусками. Добавьте `--no-daemon` для CI (daemon не нужен в одноразовых средах)."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Кратко: Публикация и CI/CD",
+        "content": [
+          {
+            "type": "callout",
+            "variant": "info",
+            "title": "Линия повествования",
+            "text": "**maven-publish** — публикация в Maven-репозиторий (GitHub Packages, Nexus и др.): publishing { publications, repositories }. **Fat JAR** (Shadow) — один JAR со всеми зависимостями для деплоя. **CI/CD**: GitHub Actions с setup-java и setup-gradle, кэш, шаги build/check/test. Дальше — итоги курса и шпаргалки."
+          }
+        ]
+      },
+  
+      {
+        "type": "section",
+        "sectionNumber": "Часть 12",
+        "title": "Итоги и шпаргалки"
+      },
+  
+      {
+        "type": "content",
+        "title": "Шпаргалка: структура build.gradle.kts",
+        "content": [
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "plugins {\n    java\n    application\n    checkstyle\n    jacoco\n    id(\"com.github.johnrengelman.shadow\") version \"8.1.1\"\n}\n\ngroup = \"com.example\"\nversion = \"1.0.0\"\n\nrepositories {\n    mavenCentral()\n}\n\ndependencies {\n    implementation(libs.guava)\n    testImplementation(libs.junit.jupiter)\n}\n\njava {\n    toolchain { languageVersion.set(JavaLanguageVersion.of(21)) }\n}\n\napplication {\n    mainClass.set(\"com.example.App\")\n}\n\ncheckstyle {\n    toolVersion = \"10.14.2\"\n    maxWarnings = 0\n}\n\ntasks.test {\n    useJUnitPlatform()\n    finalizedBy(tasks.jacocoTestReport)\n}\n\ntasks.jacocoTestReport {\n    reports { xml.required.set(true); html.required.set(true) }\n}",
+            "filename": "build.gradle.kts — полный шаблон"
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Шпаргалка: команды на каждый день",
+        "content": [
+          {
+            "type": "table",
+            "headers": ["Задача", "Команда"],
+            "rows": [
+              ["Полная сборка", "`./gradlew build`"],
+              ["Только компиляция", "`./gradlew compileJava`"],
+              ["Запуск приложения", "`./gradlew run`"],
+              ["Запуск тестов", "`./gradlew test`"],
+              ["Один тест", "`./gradlew test --tests '*MyTest'`"],
+              ["Checkstyle", "`./gradlew checkstyleMain`"],
+              ["Покрытие кода", "`./gradlew test jacocoTestReport`"],
+              ["Дерево зависимостей", "`./gradlew dependencies`"],
+              ["Очистка", "`./gradlew clean`"],
+              ["Все задачи", "`./gradlew tasks`"],
+              ["Fat JAR", "`./gradlew shadowJar`"],
+              ["Публикация", "`./gradlew publish`"],
+              ["Отладка", "`./gradlew build --info --stacktrace`"],
+              ["Build Scan", "`./gradlew build --scan`"]
+            ]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Шпаргалка: где лежат отчёты",
+        "content": [
+          {
+            "type": "table",
+            "headers": ["Отчёт", "Путь"],
+            "rows": [
+              ["Результаты тестов", "`build/reports/tests/test/index.html`"],
+              ["Покрытие JaCoCo", "`build/reports/jacoco/test/html/index.html`"],
+              ["Checkstyle (main)", "`build/reports/checkstyle/main.html`"],
+              ["Checkstyle (test)", "`build/reports/checkstyle/test.html`"],
+              ["PMD", "`build/reports/pmd/main.html`"],
+              ["SpotBugs", "`build/reports/spotbugs/main.html`"],
+              ["Профиль сборки", "`build/reports/profile/profile-*.html`"],
+              ["Собранный JAR", "`build/libs/*.jar`"],
+              ["Дистрибутив", "`build/distributions/*.zip`"]
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "tip",
+            "title": "Совет",
+            "text": "Все отчёты — HTML-файлы, которые можно открыть в браузере. В CI/CD загружайте их как артефакты для просмотра."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Лучшие практики для Java-проекта",
+        "content": [
+          {
+            "type": "ordered-list",
+            "items": [
+              "**Gradle Wrapper** — всегда `./gradlew`, не `gradle`; коммитьте `gradlew` и `gradle/wrapper/` в Git",
+              "**Kotlin DSL** (`build.gradle.kts`) — типобезопасность и подсказки в IDE для скрипта сборки",
+              "**Version Catalog** (`libs.versions.toml`) — одна точка правды для версий библиотек",
+              "**`implementation` по умолчанию** — `api` только в библиотеках, когда экспортируете типы",
+              "**Java Toolchain** — одна версия Java у всех; Gradle при необходимости скачает JDK",
+              "**Checkstyle + JaCoCo + JUnit 5** — стиль, покрытие и тесты в каждой сборке",
+              "**Convention Plugins** в `buildSrc/` — общая конфигурация для всех модулей без копипаста",
+              "**Build Cache** (`org.gradle.caching=true` в gradle.properties) — сильное ускорение повторных сборок",
+              "**Build Scan** при сбоях — `./gradlew build --scan` и отправьте ссылку коллегам",
+              "**Логику только в doLast/doFirst** — в фазе конфигурации не выполняйте тяжёлую работу"
+            ]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Полезные ресурсы",
+        "content": [
+          {
+            "type": "list",
+            "items": [
+              "**Официальная документация** — [docs.gradle.org](https://docs.gradle.org)",
+              "**Gradle Guides** — [guides.gradle.org](https://guides.gradle.org) — пошаговые руководства",
+              "**Gradle Plugin Portal** — [plugins.gradle.org](https://plugins.gradle.org) — каталог плагинов",
+              "**Maven Repository Search** — [search.maven.org](https://search.maven.org) — поиск библиотек",
+              "**Gradle Release Notes** — [docs.gradle.org/current/release-notes](https://docs.gradle.org/current/release-notes.html)",
+              "**Gradle GitHub** — [github.com/gradle/gradle](https://github.com/gradle/gradle)",
+              "**Gradle Community Slack** — [gradle-community.slack.com](https://gradle-community.slack.com)"
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "success",
+            "title": "Главный совет",
+            "text": "Gradle — мощный инструмент с крутой кривой обучения. Не пытайтесь выучить всё сразу. Начните с `plugins`, `dependencies`, `tasks.test` — и постепенно добавляйте новые возможности по мере необходимости."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Кратко: Итоги и шпаргалки",
+        "content": [
+          {
+            "type": "callout",
+            "variant": "info",
+            "title": "Линия повествования",
+            "text": "В этом блоке — **шпаргалки**: полный шаблон build.gradle.kts для Java, команды на каждый день, **лучшие практики** (Wrapper, Kotlin DSL, Version Catalog, implementation/api, Toolchain, Checkstyle+JaCoCo+JUnit, Convention Plugins, Build Cache, --scan) и **полезные ссылки**. На этом курс завершён. Успехов с Gradle и Java!"
+          }
+        ]
+      },
+  
+      {
+        "type": "title",
+        "title": "Спасибо за внимание!",
+        "subtitle": "Gradle для Java — от основ до продвинутых техник",
+        "author": "При проблемах: ./gradlew build --scan · docs.gradle.org"
+      }
+  
+    ]
+  }

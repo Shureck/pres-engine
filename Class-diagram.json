@@ -1,0 +1,1428 @@
+{
+    "meta": {
+      "title": "Диаграммы классов UML",
+      "subtitle": "Диаграммы классов и диаграммы классов анализа — полное руководство",
+      "description": "Подробный разбор нотации UML для диаграмм классов: от базовых понятий до диаграмм классов анализа с паттернами Boundary-Control-Entity",
+      "author": "CodeSlides",
+      "date": "2025",
+      "language": "java",
+      "version": "1.0",
+      "tags": ["UML", "class diagram", "analysis", "OOP", "design", "BCE", "OOAD"]
+    },
+    "slides": [
+  
+      {
+        "type": "title",
+        "title": "Диаграммы классов UML",
+        "subtitle": "Диаграммы классов и диаграммы классов анализа",
+        "author": "Объектно-ориентированный анализ и проектирование"
+      },
+  
+      {
+        "type": "section",
+        "sectionNumber": "Часть 01",
+        "title": "Введение в UML и диаграммы классов"
+      },
+  
+      {
+        "type": "content",
+        "title": "Что такое UML?",
+        "content": [
+          {
+            "type": "text",
+            "text": "**UML** (Unified Modeling Language) — унифицированный язык моделирования, стандартный способ визуализации архитектуры и дизайна программных систем."
+          },
+          {
+            "type": "columns",
+            "columns": [
+              [
+                {
+                  "type": "text",
+                  "text": "**Структурные диаграммы** — описывают *что* есть в системе:"
+                },
+                {
+                  "type": "list",
+                  "items": [
+                    "**Диаграмма классов** ⭐",
+                    "Диаграмма объектов",
+                    "Диаграмма компонентов",
+                    "Диаграмма пакетов",
+                    "Диаграмма развёртывания"
+                  ]
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "**Поведенческие диаграммы** — описывают *как* система работает:"
+                },
+                {
+                  "type": "list",
+                  "items": [
+                    "Диаграмма вариантов использования",
+                    "Диаграмма последовательности",
+                    "Диаграмма состояний",
+                    "Диаграмма активности",
+                    "Диаграмма коммуникации"
+                  ]
+                }
+              ]
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "info",
+            "text": "**Диаграмма классов** — самая используемая UML-диаграмма. Она является основой объектно-ориентированного проектирования."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Зачем нужны диаграммы классов?",
+        "content": [
+          {
+            "type": "ordered-list",
+            "items": [
+              "**Визуализация структуры** — наглядно показывают классы и связи между ними",
+              "**Коммуникация в команде** — общий язык между аналитиками, разработчиками, тестировщиками",
+              "**Документация** — фиксируют архитектурные решения",
+              "**Проектирование до кода** — позволяют продумать архитектуру заранее",
+              "**Обнаружение проблем** — выявляют циклические зависимости, нарушения принципов SOLID",
+              "**Генерация кода** — многие инструменты генерируют скелет кода из диаграмм"
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "tip",
+            "title": "Когда рисовать диаграммы?",
+            "text": "Не рисуйте диаграммы классов для **каждого** класса. Используйте их для ключевых частей системы: доменной модели, сложных модулей, публичных API."
+          }
+        ]
+      },
+  
+      {
+        "type": "section",
+        "sectionNumber": "Часть 02",
+        "title": "Нотация: классы и их элементы"
+      },
+  
+      {
+        "type": "content",
+        "title": "Класс — базовый элемент",
+        "content": [
+          {
+            "type": "text",
+            "text": "Класс изображается как **прямоугольник**, разделённый на три секции:"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "┌─────────────────────────┐\n│       «stereotype»      │  ← необязательный стереотип\n│       ClassName          │  ← имя класса (жирным)\n├─────────────────────────┤\n│ - privateField: Type     │  ← атрибуты (поля)\n│ # protectedField: Type   │\n│ + publicField: Type      │\n├─────────────────────────┤\n│ + publicMethod(): RetType│  ← операции (методы)\n│ - privateMethod(): void  │\n│ # helper(p: Type): Type  │\n└─────────────────────────┘",
+            "filename": "нотация класса"
+          },
+          {
+            "type": "table",
+            "headers": ["Секция", "Содержимое"],
+            "rows": [
+              ["Верхняя", "Имя класса, стереотип (`«interface»`, `«abstract»`, `«enum»`)"],
+              ["Средняя", "**Атрибуты** (поля) с типами и видимостью"],
+              ["Нижняя", "**Операции** (методы) с параметрами и возвращаемым типом"]
+            ]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Модификаторы видимости (Access Modifiers)",
+        "content": [
+          {
+            "type": "table",
+            "headers": ["Символ UML", "Модификатор", "Описание", "Java / Kotlin"],
+            "rows": [
+              ["`+`", "**public**", "Доступен всем", "`public`"],
+              ["`-`", "**private**", "Доступен только внутри класса", "`private`"],
+              ["`#`", "**protected**", "Доступен классу и его наследникам", "`protected`"],
+              ["`~`", "**package**", "Доступен внутри пакета", "default (Java) / `internal` (Kotlin)"]
+            ]
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "┌───────────────────────────┐\n│         Person            │\n├───────────────────────────┤\n│ - name: String            │  ← private\n│ - age: Int                │  ← private\n│ # id: Long                │  ← protected\n│ + email: String           │  ← public\n├───────────────────────────┤\n│ + getName(): String       │  ← public\n│ + setName(n: String): void│  ← public\n│ - validate(): Boolean     │  ← private\n└───────────────────────────┘",
+            "filename": "пример"
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Атрибуты — синтаксис",
+        "content": [
+          {
+            "type": "text",
+            "text": "Полный формат атрибута в UML:"
+          },
+          {
+            "type": "formula",
+            "text": "видимость имя : тип [кратность] = значение_по_умолчанию {свойства}"
+          },
+          {
+            "type": "table",
+            "headers": ["Пример UML", "Значение"],
+            "rows": [
+              ["`- name: String`", "Приватное поле `name` типа `String`"],
+              ["`+ age: Int = 0`", "Публичное поле `age` со значением по умолчанию 0"],
+              ["`- items: List<Item> [0..*]`", "Приватный список с кратностью «ноль или более»"],
+              ["`# id: Long {readOnly}`", "Защищённое поле только для чтения"],
+              ["`+ MAX_SIZE: Int = 100 {readOnly}`", "Публичная константа (static final)"]
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "info",
+            "title": "Статические члены",
+            "text": "**Статические** (static) атрибуты и методы обозначаются **подчёркиванием**: `+ getInstance(): Singleton`"
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Операции (методы) — синтаксис",
+        "content": [
+          {
+            "type": "text",
+            "text": "Полный формат операции в UML:"
+          },
+          {
+            "type": "formula",
+            "text": "видимость имя (параметры) : возвращаемый_тип {свойства}"
+          },
+          {
+            "type": "table",
+            "headers": ["Пример UML", "Java-эквивалент"],
+            "rows": [
+              ["`+ getName(): String`", "`public String getName()`"],
+              ["`- validate(input: String): Boolean`", "`private boolean validate(String input)`"],
+              ["`+ save(entity: Entity): void`", "`public void save(Entity entity)`"],
+              ["`# calculate(a: Int, b: Int): Double`", "`protected double calculate(int a, int b)`"],
+              ["`+ of(name: String): Person` {static}", "`public static Person of(String name)`"]
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "info",
+            "title": "Абстрактные методы",
+            "text": "**Абстрактные** методы записываются *курсивом*: `+ draw(): void`. Абстрактные классы — имя класса тоже курсивом или добавляется стереотип `«abstract»`."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Специальные типы классов",
+        "content": [
+          {
+            "type": "columns",
+            "columns": [
+              [
+                {
+                  "type": "code",
+                  "language": "kotlin",
+                  "code": "┌───────────────────┐\n│   «interface»     │\n│    Drawable       │\n├───────────────────┤\n│                   │\n├───────────────────┤\n│ + draw(): void    │\n│ + resize(s: Int)  │\n└───────────────────┘",
+                  "filename": "Интерфейс"
+                },
+                {
+                  "type": "code",
+                  "language": "kotlin",
+                  "code": "┌───────────────────┐\n│   «abstract»      │\n│     Shape         │\n├───────────────────┤\n│ # color: Color    │\n├───────────────────┤\n│ + area(): Double  │\n│ + draw(): void    │\n└───────────────────┘",
+                  "filename": "Абстрактный класс"
+                }
+              ],
+              [
+                {
+                  "type": "code",
+                  "language": "kotlin",
+                  "code": "┌───────────────────┐\n│   «enumeration»   │\n│     Color         │\n├───────────────────┤\n│   RED             │\n│   GREEN           │\n│   BLUE            │\n├───────────────────┤\n│ + rgb(): Int      │\n└───────────────────┘",
+                  "filename": "Перечисление"
+                },
+                {
+                  "type": "code",
+                  "language": "kotlin",
+                  "code": "┌───────────────────┐\n│   «dataclass»     │\n│     Point         │\n├───────────────────┤\n│ + x: Double       │\n│ + y: Double       │\n├───────────────────┤\n│ + distanceTo(): D │\n└───────────────────┘",
+                  "filename": "Data class"
+                }
+              ]
+            ]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Кратность (Multiplicity)",
+        "content": [
+          {
+            "type": "text",
+            "text": "**Кратность** указывает, сколько объектов может участвовать в связи:"
+          },
+          {
+            "type": "table",
+            "headers": ["Нотация", "Значение", "Пример"],
+            "rows": [
+              ["`1`", "Ровно один", "У заказа ровно 1 клиент"],
+              ["`0..1`", "Ноль или один (необязательный)", "У человека 0 или 1 паспорт"],
+              ["`*` или `0..*`", "Ноль или более", "У клиента 0 или более заказов"],
+              ["`1..*`", "Один или более", "В заказе 1 или более товаров"],
+              ["`n`", "Ровно n", "У автомобиля ровно 4 колеса"],
+              ["`n..m`", "От n до m", "Команда из 3..10 человек"]
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "tip",
+            "title": "Где писать кратность?",
+            "text": "Кратность пишется **у конца** линии связи, рядом с классом, к которому она относится. Например: `Customer 1 ———— * Order` означает «один клиент может иметь много заказов»."
+          }
+        ]
+      },
+  
+      {
+        "type": "section",
+        "sectionNumber": "Часть 03",
+        "title": "Типы связей между классами"
+      },
+  
+      {
+        "type": "content",
+        "title": "Обзор всех типов связей",
+        "content": [
+          {
+            "type": "table",
+            "headers": ["Связь", "Графическое обозначение", "Смысл"],
+            "rows": [
+              ["**Ассоциация**", "`A ————————— B`", "A знает о B (использует, ссылается)"],
+              ["**Направленная ассоциация**", "`A ——————————> B`", "A знает о B, но не наоборот"],
+              ["**Агрегация**", "`A ◇————————— B`", "A содержит B (B может существовать без A)"],
+              ["**Композиция**", "`A ◆————————— B`", "A владеет B (B не существует без A)"],
+              ["**Наследование**", "`B ————————▷ A`", "B наследует A (is-a)"],
+              ["**Реализация**", "`B ┄┄┄┄┄┄┄┄▷ A`", "B реализует интерфейс A"],
+              ["**Зависимость**", "`A ┄┄┄┄┄┄┄┄> B`", "A зависит от B (использует временно)"]
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "info",
+            "text": "**◇** — пустой ромб (агрегация), **◆** — закрашенный ромб (композиция), **▷** — пустой треугольник (наследование/реализация)."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Ассоциация (Association)",
+        "content": [
+          {
+            "type": "text",
+            "text": "**Ассоциация** — самая общая связь. Означает, что один класс «знает» о другом и может его использовать."
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "┌──────────┐          ┌──────────┐\n│ Student  │ 1    * │  Course  │\n│          │─────────│          │\n└──────────┘          └──────────┘\n\nОдин студент может быть записан на множество курсов.",
+            "filename": "ассоциация"
+          },
+          {
+            "type": "code",
+            "language": "java",
+            "code": "public class Student {\n    private String name;\n    private List<Course> courses;  // Ассоциация\n\n    public void enroll(Course course) {\n        courses.add(course);\n    }\n}\n\npublic class Course {\n    private String title;\n    private List<Student> students; // Двунаправленная\n}",
+            "highlightLines": [3, 12]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Направленная ассоциация",
+        "content": [
+          {
+            "type": "text",
+            "text": "**Направленная ассоциация** — только один класс знает о другом. Стрелка указывает направление навигации."
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "┌──────────┐          ┌──────────┐\n│  Order   │ ──────> │ Customer │\n│          │ *     1 │          │\n└──────────┘          └──────────┘\n\nOrder знает о Customer, но Customer не знает о своих Orders.",
+            "filename": "направленная ассоциация"
+          },
+          {
+            "type": "code",
+            "language": "java",
+            "code": "public class Order {\n    private Customer customer;  // Order -> Customer\n    private List<OrderItem> items;\n}\n\npublic class Customer {\n    private String name;\n    // НЕТ ссылки на Order!\n}",
+            "highlightLines": [2, 8]
+          },
+          {
+            "type": "callout",
+            "variant": "tip",
+            "title": "Когда использовать направленную ассоциацию?",
+            "text": "По умолчанию предпочитайте **направленные** ассоциации. Двунаправленные усложняют поддержку. Добавляйте обратную навигацию только при необходимости."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Агрегация (Aggregation)",
+        "content": [
+          {
+            "type": "text",
+            "text": "**Агрегация** — отношение «часть-целое», где часть может существовать **независимо** от целого. Обозначается **пустым ромбом** ◇ у класса-контейнера."
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "┌──────────┐          ┌──────────┐\n│Department│ ◇────── │ Employee │\n│          │ 1    * │          │\n└──────────┘          └──────────┘\n\nОтдел содержит сотрудников, но сотрудник может\nсуществовать без отдела (перейти в другой).",
+            "filename": "агрегация"
+          },
+          {
+            "type": "code",
+            "language": "java",
+            "code": "public class Department {\n    private String name;\n    private List<Employee> employees;  // Агрегация\n\n    public void addEmployee(Employee emp) {\n        employees.add(emp);  // Сотрудник создан снаружи\n    }\n}\n\npublic class Employee {\n    private String name;\n    // Может существовать без Department\n}",
+            "highlightLines": [3, 6]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Композиция (Composition)",
+        "content": [
+          {
+            "type": "text",
+            "text": "**Композиция** — строгое отношение «часть-целое», где часть **не может существовать** без целого. При уничтожении целого уничтожаются и части. Обозначается **закрашенным ромбом** ◆."
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "┌──────────┐          ┌──────────┐\n│  House   │ ◆────── │   Room   │\n│          │ 1    * │          │\n└──────────┘          └──────────┘\n\nКомнаты не существуют без дома.\nПри сносе дома комнаты уничтожаются.",
+            "filename": "композиция"
+          },
+          {
+            "type": "code",
+            "language": "java",
+            "code": "public class House {\n    private final List<Room> rooms;\n\n    public House(int roomCount) {\n        rooms = new ArrayList<>();\n        for (int i = 0; i < roomCount; i++) {\n            rooms.add(new Room(i + 1));  // Комнаты создаются ВНУТРИ\n        }\n    }\n}\n\npublic class Room {\n    private final int number;\n    // Не существует без House\n}",
+            "highlightLines": [7, 14]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Агрегация vs Композиция — сравнение",
+        "content": [
+          {
+            "type": "table",
+            "headers": ["Критерий", "Агрегация ◇", "Композиция ◆"],
+            "rows": [
+              ["Связь", "Слабая (has-a)", "Сильная (owns-a)"],
+              ["Жизненный цикл", "Часть **живёт независимо**", "Часть **умирает** с целым"],
+              ["Создание части", "Передаётся **извне**", "Создаётся **внутри** целого"],
+              ["Принадлежность", "Часть может принадлежать **нескольким** целым", "Часть принадлежит **одному** целому"],
+              ["Пример", "Университет ◇— Профессор", "Заказ ◆— Позиция заказа"],
+              ["Ромб", "Пустой ◇", "Закрашенный ◆"]
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "tip",
+            "title": "Простое правило",
+            "text": "Если при удалении контейнера его части **теряют смысл** — это **композиция**. Если части **продолжают жить** — это **агрегация**."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Наследование (Generalization)",
+        "content": [
+          {
+            "type": "text",
+            "text": "**Наследование** (обобщение) — отношение «is-a». Подкласс наследует атрибуты и методы суперкласса. Обозначается стрелкой с **пустым треугольником** ▷."
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "          ┌──────────────┐\n          │    Animal     │\n          │ «abstract»    │\n          ├──────────────┤\n          │ # name: String│\n          ├──────────────┤\n          │ + speak(): void│\n          └──────┬───────┘\n                 ▲\n         ┌───────┴───────┐\n   ┌─────┴─────┐   ┌─────┴─────┐\n   │    Dog    │   │    Cat    │\n   ├───────────┤   ├───────────┤\n   │           │   │           │\n   ├───────────┤   ├───────────┤\n   │+ speak()  │   │+ speak()  │\n   └───────────┘   └───────────┘",
+            "filename": "наследование"
+          },
+          {
+            "type": "code",
+            "language": "java",
+            "code": "public abstract class Animal {\n    protected String name;\n    public abstract void speak();\n}\n\npublic class Dog extends Animal {\n    @Override\n    public void speak() { System.out.println(\"Woof!\"); }\n}\n\npublic class Cat extends Animal {\n    @Override\n    public void speak() { System.out.println(\"Meow!\"); }\n}",
+            "highlightLines": [6, 11]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Реализация интерфейса (Realization)",
+        "content": [
+          {
+            "type": "text",
+            "text": "**Реализация** — класс реализует контракт интерфейса. Обозначается **пунктирной** стрелкой с пустым треугольником ▷."
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "       ┌────────────────┐\n       │  «interface»   │\n       │   Serializable  │\n       ├────────────────┤\n       │+ serialize(): byte[]│\n       │+ deserialize(b: byte[])│\n       └───────┬────────┘\n               ▲ (пунктир)\n       ┌───────┴────────┐\n       │    UserDTO      │\n       ├────────────────┤\n       │- name: String   │\n       ├────────────────┤\n       │+ serialize()    │\n       │+ deserialize()  │\n       └────────────────┘",
+            "filename": "реализация"
+          },
+          {
+            "type": "code",
+            "language": "java",
+            "code": "public interface Serializable {\n    byte[] serialize();\n    void deserialize(byte[] data);\n}\n\npublic class UserDTO implements Serializable {\n    private String name;\n\n    @Override\n    public byte[] serialize() { /* ... */ }\n\n    @Override\n    public void deserialize(byte[] data) { /* ... */ }\n}",
+            "highlightLines": [6]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Зависимость (Dependency)",
+        "content": [
+          {
+            "type": "text",
+            "text": "**Зависимость** — самая слабая связь. Один класс **временно** использует другой (параметр метода, локальная переменная, вызов статического метода). Обозначается **пунктирной стрелкой**."
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "┌──────────────┐           ┌──────────────┐\n│  OrderService │ ┄┄┄┄┄┄> │  EmailSender  │\n└──────────────┘           └──────────────┘\n\nOrderService использует EmailSender,\nно не хранит на него ссылку как поле.",
+            "filename": "зависимость"
+          },
+          {
+            "type": "code",
+            "language": "java",
+            "code": "public class OrderService {\n    // НЕТ поля EmailSender!\n\n    public void processOrder(Order order) {\n        // Зависимость: используем EmailSender временно\n        EmailSender sender = new EmailSender();\n        sender.send(order.getCustomerEmail(), \"Заказ принят\");\n    }\n}",
+            "highlightLines": [6, 7]
+          },
+          {
+            "type": "callout",
+            "variant": "info",
+            "title": "Зависимость vs Ассоциация",
+            "text": "**Ассоциация** = класс хранит ссылку (поле). **Зависимость** = класс использует другой **временно** (параметр, локальная переменная, возвращаемый тип)."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Сводка связей — мнемоника",
+        "content": [
+          {
+            "type": "text",
+            "text": "Связи упорядочены по **силе** — от самой слабой к самой сильной:"
+          },
+          {
+            "type": "ordered-list",
+            "items": [
+              "**Зависимость** (┄┄>) — «использует временно»: параметр метода, локальная переменная",
+              "**Ассоциация** (———) — «знает о»: хранит ссылку как поле",
+              "**Агрегация** (◇———) — «содержит»: часть живёт независимо",
+              "**Композиция** (◆———) — «владеет»: часть умирает с целым",
+              "**Реализация** (┄┄▷) — «реализует контракт»: implements interface",
+              "**Наследование** (——▷) — «является»: extends class"
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "warning",
+            "title": "Частая ошибка",
+            "text": "Не путайте **агрегацию** и **композицию**. Если сомневаетесь — используйте обычную **ассоциацию**. Разница между агрегацией и ассоциацией часто субъективна."
+          }
+        ]
+      },
+  
+      {
+        "type": "section",
+        "sectionNumber": "Часть 04",
+        "title": "Практические примеры"
+      },
+  
+      {
+        "type": "content",
+        "title": "Пример: Интернет-магазин",
+        "content": [
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "┌──────────────┐1      *┌──────────────┐\n│   Customer   │───────>│    Order     │\n├──────────────┤        ├──────────────┤\n│- name: String│        │- date: Date  │\n│- email: String│       │- status: Enum│\n├──────────────┤        ├──────────────┤\n│+ placeOrder()│        │+ getTotal(): $│\n└──────────────┘        └──────┬───────┘\n                               │1\n                               │\n                               ◆ (композиция)\n                               │\n                               │*\n                        ┌──────┴───────┐        ┌──────────────┐\n                        │  OrderItem   │───────>│   Product    │\n                        ├──────────────┤ *    1 ├──────────────┤\n                        │- quantity: Int│        │- name: String│\n                        │- price: Money│        │- price: Money│\n                        └──────────────┘        └──────────────┘",
+            "filename": "диаграмма интернет-магазина"
+          },
+          {
+            "type": "list",
+            "items": [
+              "`Customer` → `Order`: направленная ассоциация (1 ко многим)",
+              "`Order` ◆ `OrderItem`: **композиция** (позиции не существуют без заказа)",
+              "`OrderItem` → `Product`: направленная ассоциация (ссылается на товар)"
+            ]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Пример: Наследование фигур",
+        "content": [
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "     ┌──────────────────────┐\n     │   «interface»        │\n     │     Drawable          │\n     ├──────────────────────┤\n     │ + draw(g: Graphics)   │\n     └──────────┬───────────┘\n                ▲ (пунктир — реализация)\n     ┌──────────┴───────────┐\n     │   «abstract» Shape    │\n     ├──────────────────────┤\n     │ # x: Int              │\n     │ # y: Int              │\n     │ # color: Color        │\n     ├──────────────────────┤\n     │ + area(): Double      │\n     │ + perimeter(): Double │\n     │ + draw(g: Graphics)   │\n     └──────────┬───────────┘\n                ▲ (наследование)\n       ┌────────┼────────┐\n  ┌────┴────┐ ┌─┴──────┐ ┌┴─────────┐\n  │ Circle  │ │Rectangle│ │ Triangle │\n  ├─────────┤ ├────────┤ ├──────────┤\n  │- radius │ │- width │ │- a,b,c   │\n  ├─────────┤ │- height│ ├──────────┤\n  │+ area() │ ├────────┤ │+ area()  │\n  └─────────┘ │+ area()│ └──────────┘\n              └────────┘",
+            "filename": "иерархия фигур"
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "От диаграммы к коду",
+        "content": [
+          {
+            "type": "code",
+            "language": "java",
+            "code": "public interface Drawable {\n    void draw(Graphics g);\n}\n\npublic abstract class Shape implements Drawable {\n    protected int x;\n    protected int y;\n    protected Color color;\n\n    public abstract double area();\n    public abstract double perimeter();\n}\n\npublic class Circle extends Shape {\n    private double radius;\n\n    @Override\n    public double area() {\n        return Math.PI * radius * radius;\n    }\n\n    @Override\n    public double perimeter() {\n        return 2 * Math.PI * radius;\n    }\n\n    @Override\n    public void draw(Graphics g) {\n        g.drawOval(x, y, (int) radius * 2, (int) radius * 2);\n    }\n}",
+            "highlightLines": [5, 14]
+          },
+          {
+            "type": "callout",
+            "variant": "success",
+            "title": "Прямое соответствие",
+            "text": "Каждый элемент диаграммы напрямую отображается в код: стереотип → ключевое слово (`interface`, `abstract`), атрибуты → поля, операции → методы, связи → ссылки."
+          }
+        ]
+      },
+  
+      {
+        "type": "section",
+        "sectionNumber": "Часть 05",
+        "title": "Диаграммы классов анализа"
+      },
+  
+      {
+        "type": "content",
+        "title": "Что такое диаграмма классов анализа?",
+        "content": [
+          {
+            "type": "text",
+            "text": "**Диаграмма классов анализа** (Analysis Class Diagram) — это ранняя, **концептуальная** модель системы, создаваемая на этапе анализа требований."
+          },
+          {
+            "type": "comparison",
+            "goodLabel": "Диаграмма классов анализа",
+            "badLabel": "Диаграмма классов проектирования",
+            "good": "Высокий уровень абстракции\\n**Что** система делает\\nНезависима от технологий\\nСоздаётся на этапе **анализа**\\nФокус на предметной области",
+            "bad": "Низкий уровень абстракции\\n**Как** система устроена\\nПривязана к языку/фреймворку\\nСоздаётся на этапе **проектирования**\\nФокус на реализации"
+          },
+          {
+            "type": "callout",
+            "variant": "info",
+            "title": "Ключевая идея",
+            "text": "Диаграмма классов анализа — **мост** между требованиями (варианты использования) и проектированием (классы реализации). Она помогает понять **предметную область** без привязки к коду."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Паттерн BCE (Boundary-Control-Entity)",
+        "content": [
+          {
+            "type": "text",
+            "text": "Классы анализа делятся на **три стереотипа** по паттерну **BCE** (также известному как **ECB** или **Robustness Analysis**):"
+          },
+          {
+            "type": "steps",
+            "steps": [
+              {
+                "title": "«boundary» — Граничные классы",
+                "text": "Интерфейс между системой и внешним миром: экраны, формы, API, датчики. Через них актёры взаимодействуют с системой."
+              },
+              {
+                "title": "«control» — Управляющие классы",
+                "text": "Бизнес-логика и координация. Связывают Boundary и Entity, реализуют логику вариантов использования."
+              },
+              {
+                "title": "«entity» — Классы-сущности",
+                "text": "Объекты предметной области, хранящие данные. Соответствуют «вещам» реального мира: Клиент, Заказ, Товар."
+              }
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "tip",
+            "title": "Визуальные обозначения",
+            "text": "В UML используются специальные иконки: **Boundary** — прямоугольник с вертикальной чертой слева, **Control** — круг со стрелкой, **Entity** — круг с горизонтальной чертой снизу."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Boundary — граничные классы",
+        "content": [
+          {
+            "type": "definition",
+            "term": "«boundary»",
+            "description": "Класс, обеспечивающий **взаимодействие** между актёром (пользователем или внешней системой) и внутренними компонентами системы."
+          },
+          {
+            "type": "text",
+            "text": "Примеры граничных классов:"
+          },
+          {
+            "type": "list",
+            "items": [
+              "**LoginForm** — форма входа в систему",
+              "**ProductCatalogPage** — страница каталога товаров",
+              "**PaymentGatewayAPI** — интерфейс к платёжной системе",
+              "**NotificationService** — отправка уведомлений (email, SMS)",
+              "**SensorInterface** — интерфейс к датчику (IoT)"
+            ]
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "┌─────────────────────────┐\n│      «boundary»         │\n│     LoginForm           │\n├─────────────────────────┤\n│ - usernameField: String │\n│ - passwordField: String │\n├─────────────────────────┤\n│ + submit(): void        │\n│ + showError(msg): void  │\n│ + reset(): void         │\n└─────────────────────────┘",
+            "filename": "пример boundary"
+          },
+          {
+            "type": "callout",
+            "variant": "warning",
+            "title": "Правило",
+            "text": "Boundary классы **взаимодействуют** с актёрами и с Control классами. Они **не** взаимодействуют напрямую с Entity (только через Control)."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Control — управляющие классы",
+        "content": [
+          {
+            "type": "definition",
+            "term": "«control»",
+            "description": "Класс, содержащий **бизнес-логику** варианта использования. Координирует взаимодействие между Boundary и Entity."
+          },
+          {
+            "type": "text",
+            "text": "Примеры управляющих классов:"
+          },
+          {
+            "type": "list",
+            "items": [
+              "**AuthenticationController** — логика аутентификации",
+              "**OrderProcessor** — обработка заказа",
+              "**PaymentHandler** — логика оплаты",
+              "**RegistrationManager** — регистрация пользователя",
+              "**ReportGenerator** — генерация отчётов"
+            ]
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "┌──────────────────────────────┐\n│         «control»            │\n│   AuthenticationController   │\n├──────────────────────────────┤\n│ - maxAttempts: Int = 3       │\n├──────────────────────────────┤\n│ + authenticate(u, p): Boolean│\n│ + logout(session): void      │\n│ - validateCredentials(): Bool│\n│ - lockAccount(): void        │\n└──────────────────────────────┘",
+            "filename": "пример control"
+          },
+          {
+            "type": "callout",
+            "variant": "info",
+            "title": "Один Control на один Use Case",
+            "text": "Хорошая практика — создавать **один управляющий класс** на каждый вариант использования (Use Case). Это обеспечивает чёткое разделение обязанностей."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Entity — классы-сущности",
+        "content": [
+          {
+            "type": "definition",
+            "term": "«entity»",
+            "description": "Класс, представляющий **объект предметной области**, который хранит данные и связанную с ними бизнес-логику. Обычно долгоживущий и сохраняемый."
+          },
+          {
+            "type": "text",
+            "text": "Примеры классов-сущностей:"
+          },
+          {
+            "type": "list",
+            "items": [
+              "**User** — пользователь системы",
+              "**Order** — заказ",
+              "**Product** — товар",
+              "**Account** — банковский счёт",
+              "**Appointment** — запись на приём"
+            ]
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "┌──────────────────────────┐\n│       «entity»           │\n│        User              │\n├──────────────────────────┤\n│ - id: Long               │\n│ - username: String       │\n│ - passwordHash: String   │\n│ - email: String          │\n│ - isActive: Boolean      │\n├──────────────────────────┤\n│ + verifyPassword(): Bool │\n│ + deactivate(): void     │\n└──────────────────────────┘",
+            "filename": "пример entity"
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Правила взаимодействия BCE",
+        "content": [
+          {
+            "type": "text",
+            "text": "Между классами BCE действуют **строгие правила** взаимодействия:"
+          },
+          {
+            "type": "table",
+            "headers": ["Связь", "Разрешена?", "Пояснение"],
+            "rows": [
+              ["Актёр → Boundary", "✅", "Актёры взаимодействуют **только** через Boundary"],
+              ["Boundary → Control", "✅", "Boundary делегирует логику в Control"],
+              ["Control → Entity", "✅", "Control работает с данными через Entity"],
+              ["Control → Boundary", "✅", "Control может обновлять Boundary (UI)"],
+              ["Control → Control", "✅", "Control может делегировать другому Control"],
+              ["Entity → Entity", "✅", "Сущности могут ссылаться друг на друга"],
+              ["Boundary → Entity", "❌", "**Запрещено!** Только через Control"],
+              ["Entity → Boundary", "❌", "**Запрещено!** Entity не знает об UI"],
+              ["Актёр → Control", "❌", "**Запрещено!** Только через Boundary"],
+              ["Актёр → Entity", "❌", "**Запрещено!** Только через Boundary"]
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "warning",
+            "title": "Главное правило",
+            "text": "Boundary **никогда** не общается с Entity напрямую. Вся коммуникация идёт **через Control**. Это обеспечивает слабую связанность и позволяет заменять UI без изменения бизнес-логики."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "BCE — визуальная схема взаимодействия",
+        "content": [
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "                    ┌─────────────────┐\n  ┌────────┐        │   «boundary»    │\n  │ Актёр  │───────>│   LoginForm     │\n  └────────┘        └────────┬────────┘\n                             │\n                             │ (вызывает)\n                             ▼\n                    ┌─────────────────┐\n                    │   «control»     │\n                    │  AuthController │\n                    └───┬─────────┬──┘\n                        │         │\n            (читает)    │         │  (обновляет)\n                        ▼         ▼\n               ┌────────────┐  ┌────────────┐\n               │ «entity»   │  │ «entity»   │\n               │   User     │  │  Session   │\n               └────────────┘  └────────────┘",
+            "filename": "BCE — вход в систему"
+          },
+          {
+            "type": "text",
+            "text": "Поток: **Актёр** → **LoginForm** (boundary) → **AuthController** (control) → **User**, **Session** (entities)"
+          }
+        ]
+      },
+  
+      {
+        "type": "section",
+        "sectionNumber": "Часть 06",
+        "title": "Построение диаграммы классов анализа"
+      },
+  
+      {
+        "type": "content",
+        "title": "Методика: от Use Case к классам анализа",
+        "content": [
+          {
+            "type": "steps",
+            "steps": [
+              {
+                "title": "Возьмите вариант использования (Use Case)",
+                "text": "Например: «Пользователь оформляет заказ»"
+              },
+              {
+                "title": "Определите Boundary классы",
+                "text": "Какие экраны/формы/API видит актёр? → `OrderForm`, `CartPage`, `PaymentPage`"
+              },
+              {
+                "title": "Определите Entity классы",
+                "text": "Какие данные предметной области задействованы? → `Order`, `OrderItem`, `Product`, `Customer`"
+              },
+              {
+                "title": "Определите Control классы",
+                "text": "Какая логика координирует процесс? → `OrderController`, `PaymentProcessor`"
+              },
+              {
+                "title": "Нарисуйте связи по правилам BCE",
+                "text": "Актёр → Boundary → Control → Entity. Расставьте кратности."
+              },
+              {
+                "title": "Добавьте ключевые атрибуты и операции",
+                "text": "Не детализируйте — только самое важное для понимания."
+              }
+            ]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Пример: «Оформление заказа»",
+        "content": [
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "  ┌────────┐     ┌─────────────┐      ┌──────────────────┐\n  │Покупат.│────>│ «boundary»  │─────>│   «control»      │\n  └────────┘     │ CartPage    │      │ OrderController  │\n                 └─────────────┘      └──┬──────────┬────┘\n                                         │          │\n                 ┌─────────────┐         │          │\n                 │ «boundary»  │<────────┘          │\n                 │ PaymentPage │                    │\n                 └──────┬──────┘                    │\n                        │                           │\n                        ▼                           ▼\n                 ┌──────────────┐          ┌────────────────┐\n                 │ «control»   │          │   «entity»     │\n                 │ PaymentProc │          │    Order       │\n                 └──────┬──────┘          ├────────────────┤\n                        │                 │- date          │\n                        ▼                 │- status        │\n                 ┌──────────────┐         └───────┬────────┘\n                 │ «entity»    │                  │◆\n                 │  Payment    │                  │*\n                 └─────────────┘          ┌───────┴────────┐\n                                          │  «entity»      │\n                                          │  OrderItem     │\n                                          └───────┬────────┘\n                                                  │ *→1\n                                          ┌───────┴────────┐\n                                          │  «entity»      │\n                                          │   Product      │\n                                          └────────────────┘",
+            "filename": "Use Case: «Оформление заказа»"
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Пример: «Регистрация пользователя»",
+        "content": [
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "  ┌────────┐     ┌──────────────┐      ┌─────────────────────┐\n  │ Гость  │────>│ «boundary»   │─────>│    «control»        │\n  └────────┘     │ RegisterForm │      │ RegistrationManager │\n                 └──────────────┘      └──┬──────────────┬───┘\n                                          │              │\n                                          ▼              ▼\n                                  ┌──────────────┐ ┌────────────┐\n                                  │  «entity»    │ │ «boundary» │\n                                  │    User      │ │ EmailSender│\n                                  ├──────────────┤ └────────────┘\n                                  │- username    │\n                                  │- email       │\n                                  │- passwordHash│\n                                  │- isActive    │\n                                  └──────────────┘",
+            "filename": "Use Case: «Регистрация»"
+          },
+          {
+            "type": "callout",
+            "variant": "info",
+            "title": "Обратите внимание",
+            "text": "`EmailSender` — это тоже **Boundary**, потому что это интерфейс к **внешней системе** (почтовый сервер). Boundary — это не только UI, но и любое взаимодействие с внешним миром."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Типичные ошибки в диаграммах классов анализа",
+        "content": [
+          {
+            "type": "table",
+            "headers": ["❌ Ошибка", "✅ Как правильно"],
+            "rows": [
+              ["Boundary обращается напрямую к Entity", "Boundary → **Control** → Entity"],
+              ["Актёр связан с Control", "Актёр → **Boundary** → Control"],
+              ["Один гигантский Control на всю систему", "**Один Control** на один Use Case"],
+              ["Entity содержит логику отображения", "Логика отображения — в **Boundary**"],
+              ["Слишком много деталей реализации", "Только **ключевые** атрибуты и операции"],
+              ["Нет кратностей на связях", "Всегда указывайте **кратности**"],
+              ["Классы без стереотипов", "Всегда указывайте `«boundary»`, `«control»`, `«entity»`"]
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "error",
+            "title": "Самая частая ошибка",
+            "text": "Прямая связь `Boundary → Entity`. Запомните: **Boundary никогда не общается с Entity напрямую!**"
+          }
+        ]
+      },
+  
+      {
+        "type": "section",
+        "sectionNumber": "Часть 07",
+        "title": "BCE и архитектурные паттерны"
+      },
+  
+      {
+        "type": "content",
+        "title": "BCE и MVC / MVVM / Clean Architecture",
+        "content": [
+          {
+            "type": "text",
+            "text": "Паттерн BCE напрямую соотносится с популярными архитектурными паттернами:"
+          },
+          {
+            "type": "table",
+            "headers": ["BCE", "MVC", "MVVM", "Clean Architecture"],
+            "rows": [
+              ["**Boundary**", "View", "View + ViewModel", "Presenters / Controllers / Gateways"],
+              ["**Control**", "Controller", "ViewModel", "Use Cases / Interactors"],
+              ["**Entity**", "Model", "Model", "Entities / Domain"]
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "success",
+            "title": "Универсальность BCE",
+            "text": "BCE — это **архитектурный паттерн анализа**, который затем отображается на конкретную архитектуру реализации (MVC, MVVM, Hexagonal и т.д.). Понимание BCE помогает проектировать **любую** архитектуру."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "От анализа к проектированию",
+        "content": [
+          {
+            "type": "text",
+            "text": "Диаграмма классов анализа **трансформируется** в диаграмму классов проектирования:"
+          },
+          {
+            "type": "table",
+            "headers": ["Класс анализа", "→", "Классы проектирования"],
+            "rows": [
+              ["`«boundary» LoginForm`", "→", "`LoginActivity`, `LoginFragment`, `LoginView`"],
+              ["`«control» AuthController`", "→", "`AuthService`, `AuthUseCase`, `AuthRepository`"],
+              ["`«entity» User`", "→", "`User`, `UserEntity`, `UserDTO`, `UserMapper`"],
+              ["`«boundary» EmailSender`", "→", "`EmailGateway`, `SmtpEmailService`, `EmailTemplate`"]
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "info",
+            "title": "Один к многим",
+            "text": "Один класс анализа часто становится **несколькими** классами проектирования. Это нормально — анализ даёт общую картину, проектирование добавляет детали реализации."
+          }
+        ]
+      },
+  
+      {
+        "type": "section",
+        "sectionNumber": "Часть 08",
+        "title": "Продвинутые элементы"
+      },
+  
+      {
+        "type": "content",
+        "title": "Класс ассоциации (Association Class)",
+        "content": [
+          {
+            "type": "text",
+            "text": "Иногда связь между классами сама имеет **атрибуты**. В таком случае используется **класс ассоциации** — он «прикрепляется» к линии связи пунктирной линией."
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "┌──────────┐ *        * ┌──────────┐\n│ Student  │────────────│  Course  │\n└──────────┘            └──────────┘\n                │\n                ┆ (пунктир)\n                │\n         ┌──────┴──────┐\n         │ Enrollment  │  ← Класс ассоциации\n         ├─────────────┤\n         │- grade: Char │\n         │- date: Date  │\n         │- semester: Int│\n         └─────────────┘",
+            "filename": "класс ассоциации"
+          },
+          {
+            "type": "text",
+            "text": "Оценка (`grade`) не принадлежит ни `Student`, ни `Course` — она принадлежит **связи** между ними."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Пакеты и пространства имён",
+        "content": [
+          {
+            "type": "text",
+            "text": "Для организации больших диаграмм классы группируются в **пакеты** (packages). Пакет изображается как папка с вкладкой:"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": " ┌─────┐\n ┌┤ ui  ├──────────────────────┐\n │└─────┘                      │\n │  ┌──────────────┐           │\n │  │ «boundary»   │           │\n │  │  LoginForm   │           │\n │  └──────────────┘           │\n │  ┌──────────────┐           │\n │  │ «boundary»   │           │\n │  │  CartPage    │           │\n │  └──────────────┘           │\n └─────────────────────────────┘\n\n ┌──────────┐\n ┌┤ domain   ├─────────────────┐\n │└──────────┘                  │\n │  ┌──────────────┐           │\n │  │ «entity»     │           │\n │  │   User       │           │\n │  └──────────────┘           │\n │  ┌──────────────┐           │\n │  │ «entity»     │           │\n │  │   Order      │           │\n │  └──────────────┘           │\n └─────────────────────────────┘\n\n ┌──────────┐\n ┌┤ service  ├─────────────────┐\n │└──────────┘                  │\n │  ┌──────────────────┐       │\n │  │ «control»        │       │\n │  │ OrderController  │       │\n │  └──────────────────┘       │\n └─────────────────────────────┘",
+            "filename": "пакеты"
+          },
+          {
+            "type": "callout",
+            "variant": "tip",
+            "title": "Зависимости между пакетами",
+            "text": "Пакеты можно соединять пунктирными стрелками зависимости: `ui ┄┄> service ┄┄> domain`. Это показывает направление зависимостей на высоком уровне."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Ограничения и примечания (Notes & Constraints)",
+        "content": [
+          {
+            "type": "text",
+            "text": "UML позволяет добавлять **примечания** (notes) и **ограничения** (constraints) к любым элементам диаграммы:"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "┌──────────────┐       ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐\n│   Account    │╌╌╌╌╌╌╌  Баланс не может быть  \n├──────────────┤       │ отрицательным:        │\n│- balance: Money│       {balance >= 0}        \n├──────────────┤       └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘\n│+ withdraw() │\n│+ deposit()  │\n└──────────────┘\n\n    ┌──────────────┐\n    │   Order      │\n    ├──────────────┤\n    │- items [1..*]│  ← {ordered}\n    │- date        │  ← {readOnly}\n    └──────────────┘",
+            "filename": "примечания и ограничения"
+          },
+          {
+            "type": "table",
+            "headers": ["Ограничение", "Значение"],
+            "rows": [
+              ["`{readOnly}`", "Атрибут только для чтения"],
+              ["`{ordered}`", "Коллекция упорядочена"],
+              ["`{unique}`", "Элементы коллекции уникальны"],
+              ["`{frozen}`", "Значение не меняется после инициализации"],
+              ["`{balance >= 0}`", "Произвольный инвариант на OCL или естественном языке"]
+            ]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Шаблонные классы (Generics / Templates)",
+        "content": [
+          {
+            "type": "text",
+            "text": "Шаблонные (параметризованные) классы обозначаются **пунктирным прямоугольником** с параметром в правом верхнем углу:"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "                        ┌─────┐\n┌───────────────────────┤  T  │\n│    Repository<T>      └─────┘\n├──────────────────────────────┤\n│                              │\n├──────────────────────────────┤\n│ + findById(id: Long): T     │\n│ + findAll(): List<T>        │\n│ + save(entity: T): T        │\n│ + delete(entity: T): void   │\n└──────────────────────────────┘\n\n          ▲ (привязка: T = User)\n          │\n┌─────────┴─────────┐\n│  UserRepository   │\n│ «bind» T::User    │\n├───────────────────┤\n│+ findByEmail(): U │\n└───────────────────┘",
+            "filename": "шаблонный класс"
+          },
+          {
+            "type": "code",
+            "language": "java",
+            "code": "public interface Repository<T> {\n    T findById(Long id);\n    List<T> findAll();\n    T save(T entity);\n    void delete(T entity);\n}\n\npublic class UserRepository implements Repository<User> {\n    public User findByEmail(String email) { /* ... */ }\n}",
+            "highlightLines": [1, 8]
+          }
+        ]
+      },
+  
+      {
+        "type": "section",
+        "sectionNumber": "Часть 09",
+        "title": "Комплексный пример"
+      },
+  
+      {
+        "type": "content",
+        "title": "Задание: Система бронирования отелей",
+        "content": [
+          {
+            "type": "text",
+            "text": "Построим диаграмму классов анализа для системы бронирования отелей. **Варианты использования**:"
+          },
+          {
+            "type": "ordered-list",
+            "items": [
+              "Гость **ищет** доступные номера по датам и типу",
+              "Гость **бронирует** номер с указанием дат заезда/выезда",
+              "Гость **оплачивает** бронирование",
+              "Администратор **управляет** номерами (добавляет, блокирует)",
+              "Система **отправляет** подтверждение бронирования по email"
+            ]
+          },
+          {
+            "type": "text",
+            "text": "**Актёры**: Гость, Администратор, Платёжная система, Почтовый сервис"
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Шаг 1: определяем Boundary классы",
+        "content": [
+          {
+            "type": "text",
+            "text": "Для каждого актёра и его взаимодействия определяем граничный класс:"
+          },
+          {
+            "type": "table",
+            "headers": ["Актёр", "Boundary", "Назначение"],
+            "rows": [
+              ["Гость", "`SearchForm`", "Форма поиска номеров"],
+              ["Гость", "`BookingForm`", "Форма оформления бронирования"],
+              ["Гость", "`PaymentPage`", "Страница оплаты"],
+              ["Администратор", "`AdminPanel`", "Панель управления номерами"],
+              ["Платёжная система", "`PaymentGateway`", "Интерфейс к внешней платёжной системе"],
+              ["Почтовый сервис", "`EmailService`", "Интерфейс отправки email"]
+            ]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Шаг 2: определяем Entity классы",
+        "content": [
+          {
+            "type": "text",
+            "text": "Выявляем объекты предметной области:"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "┌────────────────┐  ┌────────────────┐  ┌────────────────┐\n│   «entity»     │  │   «entity»     │  │   «entity»     │\n│     Hotel      │  │     Room       │  │   RoomType     │\n├────────────────┤  ├────────────────┤  ├────────────────┤\n│- name: String  │  │- number: String│  │- name: String  │\n│- address: Str  │  │- floor: Int    │  │- capacity: Int │\n│- stars: Int    │  │- isAvailable   │  │- pricePerNight │\n└────────────────┘  └────────────────┘  └────────────────┘\n\n┌────────────────┐  ┌────────────────┐  ┌────────────────┐\n│   «entity»     │  │   «entity»     │  │   «entity»     │\n│   Booking      │  │    Guest       │  │   Payment      │\n├────────────────┤  ├────────────────┤  ├────────────────┤\n│- checkIn: Date │  │- name: String  │  │- amount: Money │\n│- checkOut: Date│  │- email: String │  │- date: Date    │\n│- status: Enum  │  │- phone: String │  │- method: Enum  │\n└────────────────┘  └────────────────┘  └────────────────┘",
+            "filename": "сущности"
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Шаг 3: определяем Control классы",
+        "content": [
+          {
+            "type": "text",
+            "text": "Для каждого варианта использования — свой управляющий класс:"
+          },
+          {
+            "type": "table",
+            "headers": ["Use Case", "Control", "Обязанности"],
+            "rows": [
+              ["Поиск номеров", "`SearchController`", "Фильтрация по датам, типу, цене"],
+              ["Бронирование", "`BookingController`", "Проверка доступности, создание Booking"],
+              ["Оплата", "`PaymentController`", "Взаимодействие с платёжной системой"],
+              ["Управление номерами", "`RoomManager`", "CRUD операции с номерами"],
+              ["Отправка подтверждения", "`NotificationController`", "Формирование и отправка email"]
+            ]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Шаг 4: полная диаграмма классов анализа",
+        "content": [
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "┌───────┐    ┌──────────────┐    ┌───────────────────┐    ┌──────────────┐\n│ Гость │───>│ «boundary»   │───>│   «control»       │───>│  «entity»    │\n└───────┘    │  SearchForm  │    │ SearchController  │    │   Room       │\n             └──────────────┘    └───────────────────┘    └──────┬───────┘\n                                                                 │*→1\n┌───────┐    ┌──────────────┐    ┌───────────────────┐    ┌──────┴───────┐\n│ Гость │───>│ «boundary»   │───>│   «control»       │───>│  «entity»    │\n└───────┘    │ BookingForm  │    │ BookingController │    │  Booking     │\n             └──────────────┘    └────────┬──────────┘    └──────┬───────┘\n                                          │                      │1→1\n                                          │               ┌──────┴───────┐\n                                          ▼               │  «entity»    │\n                                 ┌────────────────┐       │   Guest      │\n                                 │  «control»     │       └──────────────┘\n                                 │ PaymentContrl  │\n                                 └───┬────────┬───┘\n                                     │        │\n                                     ▼        ▼\n                            ┌────────────┐  ┌──────────────┐\n                            │ «boundary» │  │  «entity»    │\n                            │ PaymentGW  │  │  Payment     │\n                            └────────────┘  └──────────────┘\n\n                            ┌──────────────┐\n                            │ «boundary»   │\n                            │ EmailService │  ← вызывается NotificationController\n                            └──────────────┘",
+            "filename": "полная диаграмма анализа"
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Шаг 5: связи между Entity",
+        "content": [
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "┌──────────┐ 1     * ┌──────────┐ *     1 ┌──────────┐\n│  Hotel   │◆───────│   Room   │────────>│ RoomType │\n└──────────┘         └────┬─────┘         └──────────┘\n                          │ 1\n                          │\n                          │ *\n                    ┌─────┴──────┐\n                    │  Booking   │\n                    ├────────────┤\n                    │- checkIn   │\n                    │- checkOut  │\n                    │- status    │\n                    └──┬──────┬──┘\n                       │      │\n                    1  │      │ 1\n             ┌─────────┘      └──────────┐\n             ▼                           ▼\n      ┌──────────┐                ┌──────────┐\n      │  Guest   │                │ Payment  │\n      └──────────┘                └──────────┘\n\nСвязи:\n• Hotel ◆——* Room     (композиция: номера не существуют без отеля)\n• Room *——1 RoomType  (ассоциация: номер имеет тип)\n• Room 1——* Booking   (ассоциация: номер может быть забронирован)\n• Booking 1——1 Guest  (ассоциация: бронирование принадлежит гостю)\n• Booking 1——1 Payment(композиция: оплата неотделима от бронирования)",
+            "filename": "связи entity"
+          }
+        ]
+      },
+  
+      {
+        "type": "section",
+        "sectionNumber": "Часть 10",
+        "title": "Инструменты и лучшие практики"
+      },
+  
+      {
+        "type": "content",
+        "title": "Инструменты для создания диаграмм",
+        "content": [
+          {
+            "type": "table",
+            "headers": ["Инструмент", "Тип", "Стоимость", "Особенности"],
+            "rows": [
+              ["**PlantUML**", "Текстовый", "Бесплатно", "Диаграммы из кода, интеграция с IDE"],
+              ["**Mermaid**", "Текстовый", "Бесплатно", "Встраивается в Markdown, GitHub"],
+              ["**draw.io (diagrams.net)**", "Визуальный", "Бесплатно", "Веб-приложение, экспорт в PNG/SVG"],
+              ["**Lucidchart**", "Визуальный", "Freemium", "Совместная работа, красивые шаблоны"],
+              ["**StarUML**", "Визуальный", "Платный", "Полная поддержка UML, генерация кода"],
+              ["**IntelliJ IDEA**", "IDE-плагин", "Платный", "UML из существующего кода (reverse engineering)"],
+              ["**Visual Paradigm**", "Визуальный", "Freemium", "Профессиональное моделирование"]
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "tip",
+            "title": "Рекомендация",
+            "text": "Для быстрых набросков — **PlantUML** или **Mermaid** (текст легко хранить в Git). Для красивых презентаций — **draw.io**. Для reverse engineering — **IntelliJ IDEA**."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "PlantUML — диаграммы из кода",
+        "content": [
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "@startuml\n\nskinparam classAttributeIconSize 0\n\nclass Customer {\n  - name: String\n  - email: String\n  + placeOrder(): Order\n}\n\nclass Order {\n  - date: Date\n  - status: OrderStatus\n  + getTotal(): Money\n}\n\nclass OrderItem {\n  - quantity: Int\n  - price: Money\n}\n\nclass Product {\n  - name: String\n  - price: Money\n}\n\nCustomer \"1\" --> \"*\" Order\nOrder \"1\" *-- \"1..*\" OrderItem : содержит\nOrderItem \"*\" --> \"1\" Product\n\n@enduml",
+            "filename": "example.puml"
+          },
+          {
+            "type": "callout",
+            "variant": "info",
+            "title": "Синтаксис связей PlantUML",
+            "text": "`-->` ассоциация, `*--` композиция, `o--` агрегация, `<|--` наследование, `<|..` реализация, `..>` зависимость"
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Лучшие практики: диаграммы классов",
+        "content": [
+          {
+            "type": "ordered-list",
+            "items": [
+              "**Не перегружайте** — одна диаграмма = одна тема (5-15 классов максимум)",
+              "**Всегда указывайте кратности** на всех концах ассоциаций",
+              "**Предпочитайте направленные ассоциации** — минимизируйте двунаправленные связи",
+              "**Используйте стереотипы** — `«interface»`, `«abstract»`, `«enum»`, `«boundary»`, `«control»`, `«entity»`",
+              "**Показывайте только важное** — скрывайте геттеры/сеттеры, технические поля",
+              "**Группируйте по пакетам** — для больших систем используйте несколько диаграмм",
+              "**Именуйте связи** — добавляйте имена ролей и ассоциаций для ясности",
+              "**Соблюдайте направление** — наследование стрелками вверх, зависимости слева направо"
+            ]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Лучшие практики: диаграммы классов анализа",
+        "content": [
+          {
+            "type": "ordered-list",
+            "items": [
+              "**Один Control на один Use Case** — чёткое разделение обязанностей",
+              "**Boundary = точка входа для актёра** — не только UI, но и API, внешние системы",
+              "**Entity = объекты предметной области** — без технических деталей (без ORM-аннотаций)",
+              "**Строго соблюдайте правила BCE** — никаких прямых связей Boundary↔Entity",
+              "**Не детализируйте** — ключевые атрибуты и операции, без private-полей",
+              "**Начинайте с Use Case** — каждая диаграмма анализа привязана к варианту использования",
+              "**Проверяйте трассируемость** — каждый класс анализа должен быть обоснован требованием"
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "success",
+            "title": "Критерий качества",
+            "text": "Хорошая диаграмма классов анализа позволяет **бизнес-аналитику** понять структуру системы без знания языка программирования."
+          }
+        ]
+      },
+  
+      {
+        "type": "section",
+        "sectionNumber": "Часть 11",
+        "title": "Итоги"
+      },
+  
+      {
+        "type": "content",
+        "title": "Итоговая сводка: элементы нотации",
+        "content": [
+          {
+            "type": "table",
+            "headers": ["Элемент", "Обозначение", "Назначение"],
+            "rows": [
+              ["Класс", "Прямоугольник с 3 секциями", "Имя, атрибуты, операции"],
+              ["Интерфейс", "`«interface»`", "Контракт без реализации"],
+              ["Абстрактный класс", "`«abstract»` или *курсив*", "Базовый класс с абстрактными методами"],
+              ["Перечисление", "`«enumeration»`", "Фиксированный набор значений"],
+              ["Видимость", "`+` `-` `#` `~`", "public, private, protected, package"],
+              ["Кратность", "`1`, `0..1`, `*`, `1..*`", "Количество объектов в связи"],
+              ["Статический член", "Подчёркивание", "Принадлежит классу, а не экземпляру"],
+              ["Примечание", "Прямоугольник с загнутым углом", "Пояснение к элементу"]
+            ]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Итоговая сводка: связи",
+        "content": [
+          {
+            "type": "table",
+            "headers": ["Связь", "Линия", "Сила", "Ключевые слова"],
+            "rows": [
+              ["Зависимость", "Пунктир + стрелка ┄┄>", "Слабейшая", "«использует временно»"],
+              ["Ассоциация", "Сплошная линия ———", "Средняя", "«знает о», хранит ссылку"],
+              ["Агрегация", "Пустой ромб ◇———", "Средняя+", "«содержит», часть живёт отдельно"],
+              ["Композиция", "Залитый ромб ◆———", "Сильная", "«владеет», часть умирает с целым"],
+              ["Реализация", "Пунктир + треугольник ┄┄▷", "Контракт", "`implements`"],
+              ["Наследование", "Сплошная + треугольник ——▷", "Сильнейшая", "`extends`, is-a"]
+            ]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Итоговая сводка: BCE",
+        "content": [
+          {
+            "type": "table",
+            "headers": ["Стереотип", "Роль", "Примеры", "Взаимодействует с"],
+            "rows": [
+              ["`«boundary»`", "Интерфейс с внешним миром", "Формы, API, датчики, email", "Актёры, Control"],
+              ["`«control»`", "Бизнес-логика, координация", "Контроллеры, сервисы, обработчики", "Boundary, Entity, другие Control"],
+              ["`«entity»`", "Данные предметной области", "User, Order, Product, Payment", "Control, другие Entity"]
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "warning",
+            "title": "Запомните навсегда",
+            "text": "**Актёр → Boundary → Control → Entity**. Boundary **никогда** не обращается к Entity напрямую. Entity **никогда** не знает о Boundary."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Чек-лист: проверка диаграммы",
+        "content": [
+          {
+            "type": "list",
+            "items": [
+              "☐ Все классы имеют **осмысленные имена** (существительные для Entity, глаголы для Control)",
+              "☐ Указаны **стереотипы** (`«boundary»`, `«control»`, `«entity»`, `«interface»`, `«abstract»`)",
+              "☐ На всех ассоциациях указаны **кратности**",
+              "☐ Связи имеют правильный **тип** (не путаем агрегацию и композицию)",
+              "☐ Направленные ассоциации — стрелки в **правильном направлении**",
+              "☐ **Boundary не связан с Entity** напрямую (для диаграмм анализа)",
+              "☐ Диаграмма **не перегружена** (5-15 классов на одной)",
+              "☐ Показаны только **ключевые** атрибуты и операции",
+              "☐ Диаграмма **читаема** без дополнительных пояснений",
+              "☐ Каждый класс **обоснован** требованием или Use Case"
+            ]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Полезные ресурсы",
+        "content": [
+          {
+            "type": "list",
+            "items": [
+              "**UML 2.5 Specification** — [omg.org/spec/UML](https://www.omg.org/spec/UML/) — официальная спецификация",
+              "**Martin Fowler — UML Distilled** — лучшая книга по практическому UML",
+              "**Craig Larman — Applying UML and Patterns** — OOAD с BCE и GRASP",
+              "**PlantUML** — [plantuml.com](https://plantuml.com) — рисование диаграмм из кода",
+              "**draw.io** — [diagrams.net](https://app.diagrams.net) — бесплатный визуальный редактор",
+              "**Mermaid Live Editor** — [mermaid.live](https://mermaid.live) — онлайн-редактор"
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "success",
+            "title": "Главный совет",
+            "text": "Диаграмма классов — это **инструмент коммуникации**, а не формальный документ. Рисуйте ровно столько, сколько нужно для **понимания** и **обсуждения** дизайна. Лучшая диаграмма — та, которую **команда реально использует**."
+          }
+        ]
+      },
+  
+      {
+        "type": "title",
+        "title": "Спасибо за внимание!",
+        "subtitle": "Диаграммы классов UML — от нотации до диаграмм анализа",
+        "author": "Актёр → Boundary → Control → Entity 🎯"
+      }
+  
+    ]
+  }
+          

@@ -1,0 +1,68 @@
+{
+  "meta": {
+    "title": "Введение в JavaScript",
+    "lecture": "Курс веб-разработки",
+    "language": "javascript",
+    "author": "CodeSlides"
+  },
+  "slides": [
+    {
+      "type": "title",
+      "title": "Введение в JavaScript",
+      "subtitle": "Основы языка для веб-разработки",
+      "author": "CodeSlides"
+    },
+    {
+      "type": "section",
+      "title": "Переменные и типы",
+      "sectionNumber": "Часть 1"
+    },
+    {
+      "type": "content",
+      "heading": "Объявление переменных",
+      "content": [
+        {
+          "type": "text",
+          "content": "В современном JS используют const и let. var устарел."
+        },
+        {
+          "type": "code",
+          "language": "javascript",
+          "code": "const name = 'CodeSlides';\nlet count = 0;\ncount += 1;\n\n// var не рекомендуется\nvar old = 42;"
+        }
+      ]
+    },
+    {
+      "type": "content",
+      "heading": "Совет",
+      "content": [
+        {
+          "type": "callout",
+          "variant": "tip",
+          "title": "Подсказка",
+          "content": "Всегда предпочитайте const. Используйте let только когда значение действительно меняется."
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "title": "Функции",
+      "sectionNumber": "Часть 2"
+    },
+    {
+      "type": "content",
+      "heading": "Стрелочные функции",
+      "content": [
+        {
+          "type": "text",
+          "content": "Стрелочные функции — краткий синтаксис и сохранение контекста this."
+        },
+        {
+          "type": "code",
+          "language": "javascript",
+          "code": "const add = (a, b) => a + b;\nconst double = x => x * 2;\n\n// Блок тела\nconst greet = (name) => {\n  return `Hello, ${name}!`;\n};"
+        }
+      ]
+    }
+  ]
+}

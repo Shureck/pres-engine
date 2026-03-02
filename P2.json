@@ -1,0 +1,1480 @@
+{
+  "meta": {
+    "title": "Программирование на языке Kotlin",
+    "subtitle": "Лекция 2. Работа со строками. Простейшие операции. Приоритет операций.",
+    "description": "Подробный разбор работы со строками, символами, числовыми и логическими операциями, побитовыми операторами и приоритетом операций в Kotlin",
+    "author": "Степанов Павел Валериевич",
+    "date": "2024",
+    "language": "kotlin",
+    "version": "1.0",
+    "tags": ["kotlin", "strings", "operations", "priority", "bitwise", "SIC", "Yandex"]
+  },
+  "slides": [
+    {
+      "type": "title",
+      "title": "Программирование на языке Kotlin",
+      "subtitle": "Лекция 2. Работа со строками. Простейшие операции. Приоритет операций.",
+      "author": "Сертифицированный преподаватель Samsung Innovation Campus & Yandex Academic Programs — Степанов Павел Валериевич"
+    },
+
+    {
+      "type": "section",
+      "sectionNumber": "Часть 01",
+      "title": "Работа со строками"
+    },
+
+    {
+      "type": "content",
+      "title": "Символы строки",
+      "content": [
+        {
+          "type": "text",
+          "text": "Элементы строки — это отдельные символы, доступ к которым можно получить по их **индексу**. Индексация начинается с **0**."
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    val message = \"Hello\"\n    val f = message[0]              // 'H'\n    val s = message[1]              // 'e'\n    val l = message[message.lastIndex] // 'o'\n}",
+          "highlightLines": [3, 4, 5]
+        },
+        {
+          "type": "callout",
+          "variant": "info",
+          "title": "Свойство lastIndex",
+          "text": "Свойство `lastIndex` возвращает индекс последнего символа строки. Это эквивалентно `message.length - 1`."
+        }
+      ],
+      "reference": "https://hyperskill.org/learn/step/12561"
+    },
+
+    {
+      "type": "content",
+      "title": "Неизменность строк (Immutability)",
+      "content": [
+        {
+          "type": "text",
+          "text": "Строки в Kotlin **неизменяемы** (immutable) — после создания строка остаётся неизменной. Вы **не можете** изменить отдельный элемент строки."
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    val test = \"string\"\n    test[3] = 'o'  // ❌ Ошибка компиляции!\n\n    var test2 = \"string\"\n    test2[3] = 'o' // ❌ Тоже ошибка! var не помогает\n}",
+          "highlightLines": [3, 6]
+        },
+        {
+          "type": "callout",
+          "variant": "error",
+          "title": "Важно",
+          "text": "Ни `val`, ни `var` не позволяют изменять **содержимое** строки. Оператор `[]` для строк работает только на **чтение**."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Неизменность строк — переназначение",
+      "content": [
+        {
+          "type": "text",
+          "text": "Если вам необходимо «изменить» строку, вы можете **переназначить** переменную (только для `var`):"
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    var test = \"string\"\n    test = \"dddkkk\"  // ✅ Можно — переназначаем переменную\n\n    val test2 = \"string\"\n    test2 = \"strong\"  // ❌ val нельзя переназначить\n}",
+          "highlightLines": [3, 6]
+        },
+        {
+          "type": "callout",
+          "variant": "tip",
+          "title": "Что на самом деле происходит?",
+          "text": "Мы **не изменяем** хранимое значение в переменной `test`. Вместо этого мы присваиваем ей **новое** значение — создаётся новый объект String. Старый объект будет удалён сборщиком мусора."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Основные функции работы со строками",
+      "content": [
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    // Длина строки\n    val language = \"Hi\"\n    println(language.length) // 2\n\n    // Конкатенация строк\n    val str1 = \"ab\"\n    val str2 = \"cde\"\n    val result = str1 + str2 // \"abcde\"\n\n    // Конкатенация с другими типами\n    val stringPlusBoolean = \"abc\" + 10 + true\n    println(stringPlusBoolean) // abc10true\n}"
+        },
+        {
+          "type": "callout",
+          "variant": "warning",
+          "title": "Порядок конкатенации важен!",
+          "text": "Выражение `\"abc\" + 10 + true` работает, потому что первый операнд — строка. Но `10 + true + \"abc\"` вызовет ошибку компиляции, потому что нельзя сложить `Int` и `Boolean`."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Повторение, экранирование и raw-строки",
+      "content": [
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    // Повторение строки\n    print(\"Test\".repeat(5)) // TestTestTestTestTest\n\n    // Экранирование (escape-последовательности)\n    println(\"'H' is the first letter of \\\"Hello world!\\\" string.\")\n\n    // Raw строка — с символами новой строки\n    val some = \"\"\"\n        Какое-то хорошее предложение\n        А потом еще одно\n        И так далее.\n    \"\"\".trimIndent()\n}"
+        },
+        {
+          "type": "callout",
+          "variant": "info",
+          "title": "Raw строки (тройные кавычки)",
+          "text": "Raw строки заключаются в тройные кавычки `\"\"\"..\"\"\"` и позволяют использовать переносы строк и специальные символы **без экранирования**. Метод `trimIndent()` убирает общий отступ."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Сравнение строк",
+      "content": [
+        {
+          "type": "text",
+          "text": "Чтобы сравнить две строки, используются операторы `==` (равно) и `!=` (не равно). Оба оператора принимают две строки и возвращают значение типа **Boolean** (`true` или `false`):"
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    val f = \"first\"\n    val s = \"second\"\n    var str = \"first\"\n\n    println(f == str)  // true\n    println(f == s)    // false\n    println(f != s)    // true\n}"
+        },
+        {
+          "type": "callout",
+          "variant": "tip",
+          "title": "== vs === в Kotlin",
+          "text": "Оператор `==` сравнивает **содержимое** строк (структурное равенство). Оператор `===` сравнивает **ссылки** — указывают ли переменные на один и тот же объект в памяти."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Строковые шаблоны (String Templates)",
+      "content": [
+        {
+          "type": "text",
+          "text": "Иногда нужно поместить значения переменных в текст. В Kotlin для этого используются **строковые шаблоны** — знак `$` перед именем переменной:"
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    val city = \"Moscow\"\n    val temp = \"20\"\n\n    // ✅ Строковый шаблон — элегантно и читаемо\n    println(\"The temperature in $city is $temp degrees Celsius.\")\n\n    // ❌ Конкатенация — громоздко и нечитаемо\n    println(\"The temperature in \" + city + \" is \" + temp + \" degrees Celsius.\")\n}",
+          "highlightLines": [6]
+        },
+        {
+          "type": "comparison",
+          "goodLabel": "Шаблоны строк",
+          "badLabel": "Конкатенация",
+          "good": "`\"Hello, $name!\"`\\nЧитаемо, компактно, идиоматично для Kotlin",
+          "bad": "`\"Hello, \" + name + \"!\"`\\nГромоздко, сложно читать, легко ошибиться"
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Строковые шаблоны для выражений",
+      "content": [
+        {
+          "type": "text",
+          "text": "Для подстановки результата **произвольного выражения** используйте фигурные скобки `${...}` после знака `$`:"
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    val city = \"Moscow\"\n    println(\"The $city city has ${city.length} letters in the name\")\n    // The Moscow city has 6 letters in the name\n}",
+          "highlightLines": [3]
+        },
+        {
+          "type": "callout",
+          "variant": "tip",
+          "title": "Когда использовать фигурные скобки?",
+          "text": "Простая переменная: `$name`. Обращение к свойству или метод: `${name.length}`. Любое выражение: `${a + b}`, `${if (x > 0) \"positive\" else \"negative\"}`."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Подстроки — substring()",
+      "content": [
+        {
+          "type": "text",
+          "text": "Функция `substring()` принимает `startIndex` (**включая**) и `lastIndex` (**исключая**) и возвращает подстроку:"
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    val test = \"Hello\"\n    println(test.substring(0, 3)) // \"Hel\"\n    println(test.substring(1, 3)) // \"el\"\n    println(test.substring(2))    // \"llo\"\n    println(test.substring(4, 5)) // \"o\"\n}"
+        },
+        {
+          "type": "callout",
+          "variant": "info",
+          "title": "Принцип [включая, исключая)",
+          "text": "Начальный индекс **включается** в результат, а конечный — **нет**. Это стандартный подход во многих языках программирования. Длина результата = `lastIndex - startIndex`."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Замена — replace()",
+      "content": [
+        {
+          "type": "text",
+          "text": "Функция `replace()` заменяет **все вхождения** первого аргумента в строке вторым аргументом:"
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    val example = \"Good morning...\"\n\n    println(example.replace(\"morning\", \"bye\"))\n    // \"Good bye...\"\n\n    println(example.replace('.', '!'))\n    // \"Good morning!!!\"\n}"
+        },
+        {
+          "type": "callout",
+          "variant": "warning",
+          "title": "Строки неизменяемы!",
+          "text": "Метод `replace()` **не изменяет** исходную строку, а возвращает **новую**. Переменная `example` по-прежнему содержит `\"Good morning...\"`."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Обработка строк — split() и перебор",
+      "content": [
+        {
+          "type": "text",
+          "text": "Функция `split()` разбивает строку на подстроки и возвращает неизменяемый список `List<String>`:"
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    val sentence = \"какой-то длинный текст\"\n\n    val wordsList: List<String> = sentence.split(\" \")\n    // [\"какой-то\", \"длинный\", \"текст\"]\n\n    val mutableWordList = sentence.split(\" \").toMutableList()\n    // MutableList [\"какой-то\", \"длинный\", \"текст\"]\n}",
+          "highlightLines": [4, 7]
+        },
+        {
+          "type": "text",
+          "text": "**Перебор** элементов строки посимвольно:"
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    val summer = \"Теплое лето\"\n    for (i in 0 until summer.length) {\n        print(\"${summer[i]} \")\n    }\n    // Т е п л о е   л е т о\n}"
+        }
+      ]
+    },
+
+    {
+      "type": "section",
+      "sectionNumber": "Часть 02",
+      "title": "CharSequence, StringBuilder, StringBuffer"
+    },
+
+    {
+      "type": "content",
+      "title": "CharSequence — интерфейс",
+      "content": [
+        {
+          "type": "text",
+          "text": "`CharSequence` в Kotlin — это **интерфейс**, представляющий последовательность символов. Он разработан как **неизменяемый**: содержимое нельзя изменить после создания."
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    val charSequence: CharSequence = \"example\"\n    println(\"CharSequence: $charSequence\")\n\n    val charAt: Char = charSequence[0]\n    println(\"Char at index 0: $charAt\") // 'e'\n\n    val subSequence: CharSequence = charSequence.subSequence(1, 4)\n    println(\"Sub-sequence from index 1 to 4: $subSequence\") // \"xam\"\n\n    val contains: Boolean = charSequence.contains(\"amp\", ignoreCase = true)\n    println(\"CharSequence contains 'amp': $contains\") // true\n}"
+        },
+        {
+          "type": "callout",
+          "variant": "info",
+          "title": "Основные методы CharSequence",
+          "text": "`length` — длина последовательности, `get(index)` / `[index]` — символ по индексу, `subSequence(start, end)` — подпоследовательность."
+        }
+      ],
+      "reference": "https://hyperskill.org/learn/step/27020"
+    },
+
+    {
+      "type": "content",
+      "title": "CharSequence vs String",
+      "content": [
+        {
+          "type": "table",
+          "headers": ["Характеристика", "CharSequence", "String"],
+          "rows": [
+            ["Тип", "**Интерфейс**", "**Конкретный класс**"],
+            ["Реализации", "String, StringBuilder, StringBuffer и др.", "Только String"],
+            ["Отношение", "Более общий тип", "Реализует CharSequence"],
+            ["Изменяемость содержимого", "Зависит от реализации", "Всегда неизменяем"]
+          ]
+        },
+        {
+          "type": "callout",
+          "variant": "tip",
+          "title": "Ключевое правило",
+          "text": "Любая `String` — это `CharSequence`, но не каждая `CharSequence` — это `String`. Если функция принимает `CharSequence`, ей можно передать и `String`, и `StringBuilder`."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "CharSequence — когда использовать?",
+      "content": [
+        {
+          "type": "list",
+          "items": [
+            "Когда нужно представить последовательность символов, но **заранее не известна** точная реализация",
+            "Для чтения больших файлов в память, когда точная длина неизвестна заранее",
+            "Для реализации **пользовательских строковых классов**",
+            "Когда функция должна принимать **любую** строкоподобную структуру"
+          ]
+        },
+        {
+          "type": "text",
+          "text": "Преобразование `CharSequence` в `String` выполняется методом `toString()`:"
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    val charSequence: CharSequence = \"Test message!\"\n    val str: String = charSequence.toString()\n    println(str) // Test message!\n}"
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "StringBuilder — зачем нужен?",
+      "content": [
+        {
+          "type": "text",
+          "text": "Объекты `String` в Kotlin **неизменяемы**. Каждая операция конкатенации с `+` или `plus()` создаёт **новый объект** `String`."
+        },
+        {
+          "type": "callout",
+          "variant": "warning",
+          "title": "Проблема производительности",
+          "text": "При большом количестве операций конкатенации создаётся множество промежуточных объектов String, что приводит к **ненужному выделению памяти** и **снижению производительности**."
+        },
+        {
+          "type": "text",
+          "text": "`StringBuilder` решает эту проблему — он хранит **изменяемый буфер** символов и позволяет модифицировать его содержимое **без создания новых объектов**."
+        }
+      ],
+      "reference": "https://hyperskill.org/learn/step/30909"
+    },
+
+    {
+      "type": "content",
+      "title": "StringBuilder — создание объекта",
+      "content": [
+        {
+          "type": "text",
+          "text": "Два основных способа создания `StringBuilder`:"
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    // Способ 1: через конструктор\n    val sb = StringBuilder(100)    // с начальной ёмкостью 100\n    val sb1 = StringBuilder(\"Test\") // из строки\n\n    // Способ 2: через функцию buildString\n    val str = buildString {\n        append(\"Скоро\")\n        append(' ')\n        append(\"лето!\")\n    }\n    println(str) // Скоро лето!\n}",
+          "highlightLines": [7, 8, 9, 10]
+        },
+        {
+          "type": "callout",
+          "variant": "tip",
+          "title": "buildString — идиоматический способ",
+          "text": "Функция `buildString` принимает **лямбду** и позволяет создавать строку через `StringBuilder` без явного создания объекта. Это рекомендуемый подход в Kotlin."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "StringBuilder — основные методы",
+      "content": [
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    // append — добавление в конец\n    val str = buildString {\n        append(\"Kotlin \") // добавляем String\n        append(2.0)       // добавляем Double\n    } // \"Kotlin 2.0\"\n\n    // insert — вставка по индексу\n    val str2 = buildString {\n        append(\"Hello World\")\n        insert(5, \",\")\n    } // \"Hello, World\"\n\n    // delete — удаление диапазона\n    val str3 = buildString {\n        append(\"That's impossible!\")\n        delete(7, 9)\n    } // \"That's possible!\"\n}"
+        },
+        {
+          "type": "link",
+          "text": "Полная документация StringBuilder",
+          "url": "https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.text/-string-builder/"
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "StringBuilder — length vs capacity",
+      "content": [
+        {
+          "type": "columns",
+          "columns": [
+            [
+              {
+                "type": "definition",
+                "term": "length",
+                "description": "Количество символов, **реально содержащихся** в StringBuilder"
+              },
+              {
+                "type": "definition",
+                "term": "capacity()",
+                "description": "Количество символов, которые можно хранить **до изменения размера** буфера"
+              }
+            ],
+            [
+              {
+                "type": "code",
+                "language": "kotlin",
+                "code": "fun main() {\n    val sb = StringBuilder()\n    println(\"Length: ${sb.length}\")\n    // Length: 0\n    println(\"Capacity: ${sb.capacity()}\")\n    // Capacity: 16\n\n    sb.append(\"Hi\")\n    println(\"Length: ${sb.length}\")\n    // Length: 2\n    println(\"Capacity: ${sb.capacity()}\")\n    // Capacity: 16\n}"
+              }
+            ]
+          ]
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "StringBuilder — правила ёмкости",
+      "content": [
+        {
+          "type": "ordered-list",
+          "items": [
+            "Конструктор **по умолчанию** — начальная ёмкость **16**",
+            "Если передать **строку** в конструктор — ёмкость = **16 + длина строки**",
+            "Если передать **число** — ёмкость = **указанное число**"
+          ]
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    val sb = StringBuilder(\"Просто строка\") // 13 символов\n    println(\"Length: ${sb.length}\")     // Length: 13\n    println(\"Capacity: ${sb.capacity()}\") // Capacity: 29 (16 + 13)\n}",
+          "highlightLines": [4]
+        },
+        {
+          "type": "text",
+          "text": "Когда длина превышает текущую ёмкость, `StringBuilder` автоматически увеличивает её по формуле:"
+        },
+        {
+          "type": "formula",
+          "text": "newCapacity = max(oldCapacity × 2 + 2, newLength)"
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "StringBuilder — когда использовать?",
+      "content": [
+        {
+          "type": "steps",
+          "steps": [
+            {
+              "title": "Конкатенация строк",
+              "text": "Сложные операции склеивания строк: динамические SQL-запросы, генерация JSON/XML"
+            },
+            {
+              "title": "Ведение журнала и форматирование",
+              "text": "Построение сложных сообщений логов с динамическими данными без лишних накладных расходов"
+            },
+            {
+              "title": "Генерация разметки",
+              "text": "Динамическое создание HTML или XML разметки — эффективнее, чем многократная конкатенация строк"
+            }
+          ]
+        },
+        {
+          "type": "callout",
+          "variant": "tip",
+          "title": "Правило большого пальца",
+          "text": "Если вы выполняете **более 3-5 конкатенаций** в цикле или в серии — используйте `StringBuilder` или `buildString`."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Ещё раз про val и var",
+      "content": [
+        {
+          "type": "callout",
+          "variant": "warning",
+          "title": "val ≠ неизменяемый!",
+          "text": "`val` означает, что переменной **нельзя присвоить новое значение**. Но содержимое объекта, на который она ссылается, **может быть изменено**, если объект изменяемый (mutable)."
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    // val + mutable объект: содержимое можно менять\n    val numbers = mutableListOf(1, 2, 3)\n    numbers.add(4)  // ✅ Список mutable\n    println(numbers)  // [1, 2, 3, 4]\n\n    // var: можно присвоить новый объект\n    var list = mutableListOf(1, 2)\n    list = mutableListOf(3, 4)  // ✅ Переназначение\n    println(list)  // [3, 4]\n}",
+          "highlightLines": [3, 4, 8, 9]
+        },
+        {
+          "type": "table",
+          "headers": ["", "Переназначение (=)", "Изменение содержимого"],
+          "rows": [
+            ["`val` + immutable", "❌", "❌"],
+            ["`val` + mutable", "❌", "✅"],
+            ["`var` + immutable", "✅", "❌"],
+            ["`var` + mutable", "✅", "✅"]
+          ]
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "StringBuffer — потокобезопасный аналог",
+      "content": [
+        {
+          "type": "text",
+          "text": "Когда нескольким потокам нужно одновременно модифицировать один строковый буфер, `StringBuilder` может привести к проблемам. Решение — **StringBuffer**."
+        },
+        {
+          "type": "columns",
+          "columns": [
+            [
+              {
+                "type": "text",
+                "text": "**StringBuffer** похож на `StringBuilder`, но с добавлением **синхронизации** — механизма, гарантирующего, что только один поток может модифицировать буфер одновременно."
+              },
+              {
+                "type": "code",
+                "language": "kotlin",
+                "code": "fun main() {\n    val buffer = StringBuffer()\n    val buffer2 = StringBuffer(\"Test\")\n}"
+              }
+            ],
+            [
+              {
+                "type": "table",
+                "headers": ["", "StringBuilder", "StringBuffer"],
+                "rows": [
+                  ["Потокобезопасность", "❌", "✅"],
+                  ["Производительность", "Быстрее", "Медленнее"],
+                  ["Использование", "Однопоточные", "Многопоточные"]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "reference": "https://hyperskill.org/learn/step/30264"
+    },
+
+    {
+      "type": "content",
+      "title": "StringBuffer — когда использовать?",
+      "content": [
+        {
+          "type": "steps",
+          "steps": [
+            {
+              "title": "Параллельная обработка данных",
+              "text": "Несколько потоков извлекают и обрабатывают данные из общего файла логов"
+            },
+            {
+              "title": "Многопоточная генерация текста",
+              "text": "Одновременная генерация отчётов или форматирование документов из нескольких потоков"
+            },
+            {
+              "title": "Поточно-безопасное кэширование строк",
+              "text": "Веб-серверы или СУБД, где несколько потоков должны безопасно читать и модифицировать кэшированные строки"
+            }
+          ]
+        },
+        {
+          "type": "callout",
+          "variant": "info",
+          "title": "Правило выбора",
+          "text": "Если работаете **в одном потоке** → `StringBuilder`. Если **несколько потоков** модифицируют один буфер → `StringBuffer`."
+        }
+      ]
+    },
+
+    {
+      "type": "section",
+      "sectionNumber": "Часть 03",
+      "title": "Арифметические операции"
+    },
+
+    {
+      "type": "content",
+      "title": "Бинарные арифметические операции",
+      "content": [
+        {
+          "type": "text",
+          "text": "В Kotlin **пять** арифметических операторов:"
+        },
+        {
+          "type": "table",
+          "headers": ["Оператор", "Название", "Пример", "Результат"],
+          "rows": [
+            ["`+`", "Сложение", "`13 + 25`", "`38`"],
+            ["`-`", "Вычитание", "`70 - 30`", "`40`"],
+            ["`*`", "Умножение", "`21 * 3`", "`63`"],
+            ["`/`", "Целочисленное деление", "`7 / 2`", "`3`"],
+            ["`%`", "Остаток от деления (модуль)", "`7 % 2`", "`1`"]
+          ]
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    println(13 + 25)  // 38\n    println(20 + 70)  // 90\n    println(70 - 30)  // 40\n    println(30 - 70)  // -40\n    println(21 * 3)   // 63\n    println(20 * 10)  // 200\n}"
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Унарные операции",
+      "content": [
+        {
+          "type": "text",
+          "text": "**Унарный** оператор принимает **одно** значение в качестве операнда:"
+        },
+        {
+          "type": "list",
+          "items": [
+            "**Унарный плюс** `+` — просто возвращает значение (необязательный оператор)",
+            "**Унарный минус** `-` — меняет знак значения или выражения"
+          ]
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    println(+7)         // 7\n    println(+(-7))      // -7\n    println(-81)        // -81\n    println(-(23 + 4))  // -27\n}"
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Приоритет арифметических операций",
+      "content": [
+        {
+          "type": "text",
+          "text": "Список отсортирован от **самого высокого** к **самому низкому** приоритету:"
+        },
+        {
+          "type": "ordered-list",
+          "items": [
+            "**Скобки** `( )`",
+            "**Унарный** плюс/минус: `+x`, `-x`",
+            "**Умножение**, деление и модуль: `*`, `/`, `%`",
+            "**Сложение** и вычитание: `+`, `-`"
+          ]
+        },
+        {
+          "type": "callout",
+          "variant": "tip",
+          "title": "Мнемоника BODMAS",
+          "text": "**B**rackets → **O**rder → **D**ivision → **M**ultiplication → **A**ddition → **S**ubtraction. Помните этот порядок — он важен для правильных вычислений!"
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Составные операции присваивания",
+      "content": [
+        {
+          "type": "text",
+          "text": "Составные операции объединяют арифметику и присваивание, чтобы **избежать повторения** переменной:"
+        },
+        {
+          "type": "table",
+          "headers": ["Оператор", "Эквивалент", "Пример"],
+          "rows": [
+            ["`A += B`", "`A = A + B`", "`a += 2` → 5"],
+            ["`A -= B`", "`A = A - B`", "`a -= 2` → 3"],
+            ["`A *= B`", "`A = A * B`", "`a *= 2` → 6"],
+            ["`A /= B`", "`A = A / B`", "`a /= 2` → 3"],
+            ["`A %= B`", "`A = A % B`", "`a %= 2` → 1"]
+          ]
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    var a = 3\n    a += 2  // 5\n    a -= 2  // 3\n    a *= 2  // 6\n    a /= 2  // 3\n    a %= 2  // 1\n}"
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Инкремент и декремент — Prefix vs Postfix",
+      "content": [
+        {
+          "type": "columns",
+          "columns": [
+            [
+              {
+                "type": "text",
+                "text": "**Префиксная** форма (`++a`): сначала **изменяет**, потом **использует**"
+              },
+              {
+                "type": "code",
+                "language": "kotlin",
+                "code": "fun main() {\n    var a = 10\n    val b = ++a\n    println(a) // 11\n    println(b) // 11\n}"
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "text": "**Постфиксная** форма (`a++`): сначала **использует**, потом **изменяет**"
+              },
+              {
+                "type": "code",
+                "language": "kotlin",
+                "code": "fun main() {\n    var a = 10\n    val b = a++\n    println(a) // 11\n    println(b) // 10\n}"
+              }
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "variant": "warning",
+          "title": "Главное отличие",
+          "text": "При `++a` — переменная `b` получает **уже увеличенное** значение (11). При `a++` — переменная `b` получает **старое** значение (10), а `a` увеличивается **после** присваивания."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Полный приоритет операций",
+      "content": [
+        {
+          "type": "text",
+          "text": "Список операций в порядке **убывания** приоритета:"
+        },
+        {
+          "type": "ordered-list",
+          "items": [
+            "**Скобки**: `(expr)`",
+            "**Постфиксный** инкремент/декремент: `expr++`, `expr--`",
+            "**Унарный** плюс/минус, **префиксный** инкремент/декремент: `-expr`, `++expr`, `--expr`",
+            "**Умножение**, деление, модуль: `*`, `/`, `%`",
+            "**Сложение** и вычитание: `+`, `-`",
+            "**Операции присваивания**: `=`, `+=`, `-=`, `*=`, `/=`, `%=`"
+          ]
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "val a = 1\nvar b = 5\nval c = a + 4 * --b   // --b=4, потом 4*4=16, потом 1+16=17\nprintln(c) // 17",
+          "highlightLines": [3]
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Пример: приоритет операций",
+      "content": [
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "var a = 5\nval b = 9\nval c = 3\nval d = a++ + (b / 2) - c - 4\nprintln(d) // 2",
+          "highlightLines": [4]
+        },
+        {
+          "type": "text",
+          "text": "Разберём **пошагово** выражение `a++ + (b / 2) - c - 4`:"
+        },
+        {
+          "type": "steps",
+          "steps": [
+            {
+              "title": "a++ → 5 (постфикс: используем 5, потом a станет 6)",
+              "text": "Постфиксный инкремент возвращает **старое** значение"
+            },
+            {
+              "title": "(b / 2) → 9 / 2 = 4 (целочисленное деление)",
+              "text": "Скобки вычисляются первыми"
+            },
+            {
+              "title": "5 + 4 - 3 - 4 = 2",
+              "text": "Сложение и вычитание слева направо"
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Чтение чисел с консоли",
+      "content": [
+        {
+          "type": "text",
+          "text": "Наиболее популярные целые типы: **Int** (32 бита) и **Long** (64 бита). Для чтения используется `readln()` с конвертацией:"
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    val a = readln().toInt()\n    val b = readln().toInt()\n    val sum = a + b\n    println(sum)\n}"
+        },
+        {
+          "type": "callout",
+          "variant": "info",
+          "title": "Функции конвертации",
+          "text": "`toInt()`, `toLong()`, `toDouble()`, `toFloat()` — преобразуют строку в соответствующий числовой тип. Если строка не содержит число, будет выброшено исключение `NumberFormatException`."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Беззнаковые целые числа",
+      "content": [
+        {
+          "type": "text",
+          "text": "Kotlin поддерживает **беззнаковые** целые числа — они могут содержать только **неотрицательные** значения:"
+        },
+        {
+          "type": "table",
+          "headers": ["Тип", "Бит", "Диапазон"],
+          "rows": [
+            ["`UByte`", "8", "0 .. 255"],
+            ["`UShort`", "16", "0 .. 65 535"],
+            ["`UInt`", "32", "0 .. 4 294 967 295 (2³²−1)"],
+            ["`ULong`", "64", "0 .. 18 446 744 073 709 551 615 (2⁶⁴−1)"]
+          ]
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    val uByte: UByte = 5u\n    val uShort: UShort = 10U\n    val uInt: UInt = 1000u\n    val uLong: ULong = 100_000_000UL\n}",
+          "highlightLines": [2, 3, 4, 5]
+        },
+        {
+          "type": "callout",
+          "variant": "info",
+          "text": "Суффикс `u` или `U` указывает, что число беззнаковое. Для `ULong` дополнительно добавляется `L`: `100UL`."
+        }
+      ]
+    },
+
+    {
+      "type": "section",
+      "sectionNumber": "Часть 04",
+      "title": "Вещественные числа и сравнение"
+    },
+
+    {
+      "type": "content",
+      "title": "Операции с вещественными числами",
+      "content": [
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    val one = 1.0\n    val negNumber = -1.75\n    val pi = 3.1415\n    val b: Float = 8.75f\n    val e = 2.71828f\n\n    val number = one + 1.5      // 2.5\n    val c = b + negNumber        // 7.0, тип Double\n    val squaredPi = pi * pi      // 9.86902225\n}"
+        },
+        {
+          "type": "callout",
+          "variant": "info",
+          "title": "Деление вещественных чисел",
+          "text": "Для **дробных** операндов оператор `/` выполняет **обычное деление** (не целочисленное): `squaredPi / 2` → `4.934511125`"
+        }
+      ],
+      "reference": "https://hyperskill.org/learn/step/4502"
+    },
+
+    {
+      "type": "content",
+      "title": "Ошибки вещественных вычислений",
+      "content": [
+        {
+          "type": "callout",
+          "variant": "error",
+          "title": "Числа с плавающей точкой — неточны!",
+          "text": "Операции с `Float` и `Double` могут давать **неточный** результат из-за особенностей хранения в формате IEEE 754."
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    println(3.3 / 3) // 1.0999999999999999 (а не 1.1!)\n\n    // Ошибки накапливаются:\n    val num = 0.1 + 0.1 + 0.1 + 0.1 + 0.1 +\n              0.1 + 0.1 + 0.1 + 0.1 + 0.1\n    println(num) // 0.9999999999999999 (а не 1.0!)\n}",
+          "highlightLines": [2, 7]
+        },
+        {
+          "type": "callout",
+          "variant": "tip",
+          "title": "Совет",
+          "text": "Для финансовых вычислений и точных расчётов используйте `BigDecimal` вместо `Double`."
+        }
+      ],
+      "reference": "https://hyperskill.org/learn/step/4502"
+    },
+
+    {
+      "type": "content",
+      "title": "Чтение вещественных чисел",
+      "content": [
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    val a = readln().toDouble()\n    val b = readln().toDouble()\n    val area = (a * b) / 2\n    println(area)\n\n    // Можно сменить локаль (разделитель — точка)\n    val f = readln().format(Locale.US).toFloat()\n}"
+        },
+        {
+          "type": "callout",
+          "variant": "warning",
+          "title": "Разделитель дробной части",
+          "text": "По умолчанию `toDouble()` ожидает **точку** в качестве разделителя дробной части: `3.14`. При работе с другими локалями может потребоваться дополнительная обработка."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Операторы сравнения с числами",
+      "content": [
+        {
+          "type": "text",
+          "text": "В Kotlin **шесть** операторов сравнения для работы с числами:"
+        },
+        {
+          "type": "table",
+          "headers": ["Оператор", "Значение", "Пример"],
+          "rows": [
+            ["`==`", "Равно", "`1 == 1` → `true`"],
+            ["`!=`", "Не равно", "`2 != 4` → `true`"],
+            ["`>`", "Больше", "`2 > 4` → `false`"],
+            ["`>=`", "Больше или равно", "`2 <= 3` → `true`"],
+            ["`<`", "Меньше", "`1 < 3` → `true`"],
+            ["`<=`", "Меньше или равно", "`5 <= 5` → `true`"]
+          ]
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    val one = 1; val two = 2; val three = 3; val four = 4\n\n    val oneIsOne = one == one  // true\n    val res1 = two <= three    // true\n    val res2 = two != four     // true\n    val res3 = two > four      // false\n    val res4 = one == three    // false\n}"
+        }
+      ]
+    },
+
+    {
+      "type": "section",
+      "sectionNumber": "Часть 05",
+      "title": "Логические и символьные операции"
+    },
+
+    {
+      "type": "content",
+      "title": "Логические операторы (Boolean)",
+      "content": [
+        {
+          "type": "text",
+          "text": "В Kotlin **четыре** логических оператора:"
+        },
+        {
+          "type": "table",
+          "headers": ["Оператор", "Символ", "Описание"],
+          "rows": [
+            ["**NOT**", "`!`", "Инвертирует значение: `!true` → `false`"],
+            ["**AND**", "`&&`", "`true` только если **оба** операнда `true`"],
+            ["**OR**", "`||`", "`true` если **хотя бы один** операнд `true`"],
+            ["**XOR**", "`xor`", "`true` если операнды **различны**"]
+          ]
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    val b1 = false xor false // false\n    val b2 = false xor true  // true\n    val b3 = true xor false  // true\n    val b4 = true xor true   // false\n}"
+        },
+        {
+          "type": "callout",
+          "variant": "info",
+          "title": "Приоритет логических операторов",
+          "text": "`!` (NOT) → `xor` (XOR) → `&&` (AND) → `||` (OR)"
+        }
+      ],
+      "reference": "https://hyperskill.org/learn/step/4515"
+    },
+
+    {
+      "type": "content",
+      "title": "Операторы для работы с Char",
+      "content": [
+        {
+          "type": "text",
+          "text": "Чтение символа и арифметика с символами:"
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    // Чтение символа с консоли\n    val ch: Char = readln().first()\n\n    // Получение соседних символов в Unicode\n    val ch1 = 'd'\n    val ch2 = ch1 + 1  // 'e'\n    val ch3 = ch2 - 3  // 'b'\n}",
+          "highlightLines": [7, 8]
+        },
+        {
+          "type": "comparison",
+          "goodLabel": "Можно",
+          "badLabel": "Нельзя",
+          "good": "`'d' + 1` → `'e'`\\n`'e' - 3` → `'b'`\\nК символу можно прибавить/вычесть **число**",
+          "bad": "`1 + 'a'` — нельзя добавить символ к числу\\n`'a' + 'b'` — нельзя складывать два символа"
+        }
+      ],
+      "reference": "https://hyperskill.org/learn/step/4680"
+    },
+
+    {
+      "type": "content",
+      "title": "Escape-последовательности",
+      "content": [
+        {
+          "type": "text",
+          "text": "Специальные символы, начинающиеся с обратной косой черты `\\`:"
+        },
+        {
+          "type": "table",
+          "headers": ["Последовательность", "Описание"],
+          "rows": [
+            ["`\\n`", "Символ новой строки"],
+            ["`\\t`", "Символ табуляции"],
+            ["`\\r`", "Символ возврата каретки"],
+            ["`\\\\`", "Сам символ обратной косой черты"],
+            ["`\\'`", "Одинарная кавычка"],
+            ["`\\\"`", "Двойная кавычка"]
+          ]
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    print('\\t') // табуляция\n    print('a')  // 'a'\n    print('\\n') // переход на новую строку\n    print('c')  // 'c'\n    // Вывод: \ta\n    //         c\n}",
+          "highlightLines": [2, 4]
+        }
+      ],
+      "reference": "https://hyperskill.org/learn/step/4680"
+    },
+
+    {
+      "type": "content",
+      "title": "Сравнение символов",
+      "content": [
+        {
+          "type": "text",
+          "text": "Символы сравниваются по их **позиции в таблице Unicode** с помощью операций `==`, `<`, `>`, `<=`, `>=`, `!=`:"
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    println('a' < 'c')   // true\n    println('x' >= 'z')  // false\n    println('D' == 'D')  // true\n    println('Z' != 'z')  // true\n    println('A' < 'a')   // true — заглавная A раньше строчной\n}",
+          "highlightLines": [6]
+        },
+        {
+          "type": "callout",
+          "variant": "info",
+          "title": "Порядок в Unicode",
+          "text": "Цифры (`0-9`) → Заглавные буквы (`A-Z`) → Строчные буквы (`a-z`). Поэтому `'A' < 'a'` — это `true`."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Основные функции работы с символами",
+      "content": [
+        {
+          "type": "table",
+          "headers": ["Функция", "Описание"],
+          "rows": [
+            ["`isDigit()`", "Символ — цифра? (`'1'`, `'2'`, ...)"],
+            ["`isLetter()`", "Символ — буква? (`'a'`, `'B'`, ...)"],
+            ["`isLetterOrDigit()`", "Символ — буква или цифра?"],
+            ["`isWhitespace()`", "Символ — пробел, табуляция или перенос?"],
+            ["`isUpperCase()`", "Символ — заглавная буква?"],
+            ["`isLowerCase()`", "Символ — строчная буква?"],
+            ["`uppercaseChar()`", "Преобразовать в заглавную (Kotlin 1.5+)"],
+            ["`lowercaseChar()`", "Преобразовать в строчную (Kotlin 1.5+)"]
+          ]
+        },
+        {
+          "type": "callout",
+          "variant": "warning",
+          "title": "Устаревшие методы",
+          "text": "Методы `toUpperCase()` и `toLowerCase()` устарели начиная с **Kotlin 1.5**. Используйте `uppercaseChar()` и `lowercaseChar()` вместо них."
+        }
+      ]
+    },
+
+    {
+      "type": "section",
+      "sectionNumber": "Часть 06",
+      "title": "Побитовые операции"
+    },
+
+    {
+      "type": "content",
+      "title": "Побитовые операторы",
+      "content": [
+        {
+          "type": "text",
+          "text": "Kotlin предоставляет операторы для манипулирования **отдельными битами** целых чисел. Они быстрые, поддерживаются процессором напрямую и важны в низкоуровневом программировании."
+        },
+        {
+          "type": "table",
+          "headers": ["Оператор", "Описание", "Пример"],
+          "rows": [
+            ["`inv`", "Инвертирует все биты (0↔1)", "`35.inv()` → `-36`"],
+            ["`or`", "Побитовое ИЛИ: 1 если хотя бы один = 1", "`15 or 10` → `15`"],
+            ["`and`", "Побитовое И: 1 если оба = 1", "`15 and 10` → `10`"],
+            ["`xor`", "Побитовое XOR: 1 если ровно один = 1", "`15 xor 10` → `5`"]
+          ]
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Побитовые операторы — примеры",
+      "content": [
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    val x = 15  // двоичное: 1111\n    val y = 10  // двоичное: 1010\n\n    val bitwiseAnd = x and y  // 1111 & 1010 = 1010 => 10\n    val bitwiseOr  = x or y   // 1111 | 1010 = 1111 => 15\n    val bitwiseXor = x xor y  // 1111 ^ 1010 = 0101 =>  5\n}",
+          "highlightLines": [5, 6, 7]
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    val a = 35   // 0..00100011\n    val b = -35  // 1..11011101\n\n    // Для положительного n: inv(n) = -(n+1)\n    val inverseFirst = a.inv()  // -36\n\n    // Для отрицательного -n: inv(-n) = n-1\n    val inverseSecond = b.inv() // 34\n}",
+          "highlightLines": [6, 9]
+        }
+      ]
+    },
+    {
+      "type": "content",
+      "title": "Побитовые операторы — практическое применение",
+      "content": [
+        {
+          "type": "text",
+          "text": "**Проверка чётности** — быстрый трюк с побитовым AND:"
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    val x = 5\n    val result = x and 1\n    // 101 & 001 = 001 => result = 1\n    // Значит x — нечётное (остаток 1)\n\n    val y = 8\n    val result2 = y and 1\n    // 1000 & 0001 = 0000 => result2 = 0\n    // Значит y — чётное (остаток 0)\n\n    println(result)  // 1\n    println(result2) // 0\n}",
+          "highlightLines": [3, 8]
+        },
+        {
+          "type": "callout",
+          "variant": "tip",
+          "title": "Почему это работает?",
+          "text": "Последний бит любого числа равен **1** для нечётных и **0** для чётных. Операция `x and 1` извлекает именно этот бит. Это быстрее, чем `x % 2`."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Побитовый сдвиг",
+      "content": [
+        {
+          "type": "text",
+          "text": "Три оператора побитового сдвига:"
+        },
+        {
+          "type": "table",
+          "headers": ["Оператор", "Описание", "Заполнение"],
+          "rows": [
+            ["`shl`", "Сдвиг **влево** на N бит", "Нулями справа"],
+            ["`shr`", "Сдвиг **вправо** на N бит (знаковый)", "Знаковым битом слева"],
+            ["`ushr`", "Сдвиг **вправо** на N бит (беззнаковый)", "Нулями слева"]
+          ]
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "fun main() {\n    var value = 25             // binary: 0001 1001, decimal: 25\n    value = value shl 1        // binary: 0011 0010, decimal: 50\n    value = value shl 2        // binary: 1100 1000, decimal: 200\n\n    var anotherVal = 14        // binary: 1110, decimal: 14\n    anotherVal = anotherVal shr 1 // binary: 0111, decimal: 7\n}",
+          "highlightLines": [3, 4, 7]
+        },
+        {
+          "type": "callout",
+          "variant": "info",
+          "title": "Сдвиг = умножение/деление на степень двойки",
+          "text": "`x shl n` эквивалентно `x * 2ⁿ`, а `x shr n` эквивалентно `x / 2ⁿ` (целочисленное). Сдвиг работает значительно быстрее обычного умножения."
+        }
+      ]
+    },
+
+    {
+      "type": "section",
+      "sectionNumber": "Часть 07",
+      "title": "Инкремент, декремент и итоговый приоритет"
+    },
+
+    {
+      "type": "content",
+      "title": "Операции присваивания — сводка",
+      "content": [
+        {
+          "type": "text",
+          "text": "Составные операции присваивания объединяют арифметику и присваивание:"
+        },
+        {
+          "type": "table",
+          "headers": ["Оператор", "Эквивалент"],
+          "rows": [
+            ["`A += B`", "`A = A + B`"],
+            ["`A -= B`", "`A = A - B`"],
+            ["`A *= B`", "`A = A * B`"],
+            ["`A /= B`", "`A = A / B`"],
+            ["`A %= B`", "`A = A % B`"]
+          ]
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Инкремент и декремент",
+      "content": [
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "var num = 9\nnum++ // 10, увеличение на 1\nnum-- // 9, уменьшение на 1\n\n// Это эквивалентно:\nvar num2 = 7\nnum2 += 1 // 8\nnum2 -= 1 // 7",
+          "highlightLines": [2, 3]
+        },
+        {
+          "type": "callout",
+          "variant": "info",
+          "text": "Операторы `++` и `--` работают **только** при увеличении/уменьшении на **единицу**. Оба имеют две формы: **префиксную** и **постфиксную**."
+        }
+      ],
+      "reference": "https://hyperskill.org/learn/step/10776"
+    },
+
+    {
+      "type": "content",
+      "title": "Префиксная форма — подробно",
+      "content": [
+        {
+          "type": "text",
+          "text": "**Префиксная** форма изменяет значение переменной **до** её использования:"
+        },
+        {
+          "type": "columns",
+          "columns": [
+            [
+              {
+                "type": "text",
+                "text": "**Префиксный инкремент** `++a`:"
+              },
+              {
+                "type": "code",
+                "language": "kotlin",
+                "code": "var a = 10\nval b = ++a\nprintln(a) // a = 11\nprintln(b) // b = 11",
+                "highlightLines": [2]
+              },
+              {
+                "type": "text",
+                "text": "Сначала `a` увеличивается до **11**, затем **11** присваивается `b`."
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "text": "**Префиксный декремент** `--a`:"
+              },
+              {
+                "type": "code",
+                "language": "kotlin",
+                "code": "var a = 10\nval b = --a\nprintln(a) // a = 9\nprintln(b) // b = 9",
+                "highlightLines": [2]
+              },
+              {
+                "type": "text",
+                "text": "Сначала `a` уменьшается до **9**, затем **9** присваивается `b`."
+              }
+            ]
+          ]
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Постфиксная форма — подробно",
+      "content": [
+        {
+          "type": "text",
+          "text": "**Постфиксная** форма изменяет значение переменной **после** её использования:"
+        },
+        {
+          "type": "columns",
+          "columns": [
+            [
+              {
+                "type": "text",
+                "text": "**Постфиксный инкремент** `a++`:"
+              },
+              {
+                "type": "code",
+                "language": "kotlin",
+                "code": "var a = 10\nval b = a++\nprintln(a) // a = 11\nprintln(b) // b = 10",
+                "highlightLines": [2]
+              },
+              {
+                "type": "text",
+                "text": "Сначала **10** присваивается `b`, затем `a` увеличивается до **11**."
+              }
+            ],
+            [
+              {
+                "type": "text",
+                "text": "**Постфиксный декремент** `a--`:"
+              },
+              {
+                "type": "code",
+                "language": "kotlin",
+                "code": "var a = 10\nval b = a--\nprintln(a) // a = 9\nprintln(b) // b = 10",
+                "highlightLines": [2]
+              },
+              {
+                "type": "text",
+                "text": "Сначала **10** присваивается `b`, затем `a` уменьшается до **9**."
+              }
+            ]
+          ]
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Итоговый приоритет всех операций",
+      "content": [
+        {
+          "type": "text",
+          "text": "Полный список операций в порядке **убывания** приоритета:"
+        },
+        {
+          "type": "ordered-list",
+          "items": [
+            "**Скобки**: `(expr)`",
+            "**Постфиксный** инкремент/декремент: `expr++`, `expr--`",
+            "**Унарный** плюс/минус, **префиксный** инкремент/декремент: `-expr`, `++expr`, `--expr`",
+            "**Умножение**, деление, модуль: `*`, `/`, `%`",
+            "**Сложение** и вычитание: `+`, `-`",
+            "**Операции присваивания**: `=`, `+=`, `-=`, `*=`, `/=`, `%=`"
+          ]
+        },
+        {
+          "type": "callout",
+          "variant": "warning",
+          "title": "Запомните!",
+          "text": "Если сомневаетесь в порядке вычислений — **используйте скобки**. Они всегда имеют наивысший приоритет и делают код понятнее."
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Пример: разбор сложного выражения",
+      "content": [
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "val a = 1\nvar b = 5\nval c = a + 4 * --b\nprintln(c) // 17",
+          "highlightLines": [3]
+        },
+        {
+          "type": "steps",
+          "steps": [
+            {
+              "title": "--b → b становится 4 (префиксный декремент)",
+              "text": "Префикс имеет приоритет выше умножения, поэтому `b` сначала уменьшается: 5 → **4**"
+            },
+            {
+              "title": "4 * 4 = 16 (умножение)",
+              "text": "Умножение приоритетнее сложения"
+            },
+            {
+              "title": "1 + 16 = 17 (сложение)",
+              "text": "Наконец складываем `a` (1) с результатом умножения (16)"
+            }
+          ]
+        },
+        {
+          "type": "divider"
+        },
+        {
+          "type": "code",
+          "language": "kotlin",
+          "code": "var a = 5\nval b = 9\nval c = 3\nval d = a++ + (b / 2) - c - 4\nprintln(d) // 2",
+          "highlightLines": [4]
+        },
+        {
+          "type": "steps",
+          "steps": [
+            {
+              "title": "a++ → возвращает 5 (постфикс: сначала использует, потом a = 6)",
+              "text": "Постфиксный инкремент возвращает **старое** значение"
+            },
+            {
+              "title": "(b / 2) → 9 / 2 = 4",
+              "text": "Скобки вычисляются первыми, целочисленное деление"
+            },
+            {
+              "title": "5 + 4 - 3 - 4 = 2",
+              "text": "Сложение и вычитание выполняются слева направо"
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Итоговая сводка: строки и классы",
+      "content": [
+        {
+          "type": "table",
+          "headers": ["Класс/Интерфейс", "Изменяемость", "Потокобезопасность", "Когда использовать"],
+          "rows": [
+            ["`String`", "Неизменяемый", "✅ (immutable)", "По умолчанию, для большинства задач"],
+            ["`CharSequence`", "Интерфейс", "Зависит от реализации", "Для обобщённых функций"],
+            ["`StringBuilder`", "Изменяемый", "❌", "Многократная конкатенация, один поток"],
+            ["`StringBuffer`", "Изменяемый", "✅ (synchronized)", "Многократная конкатенация, несколько потоков"]
+          ]
+        }
+      ]
+    },
+
+    {
+      "type": "content",
+      "title": "Итоговая сводка: операции",
+      "content": [
+        {
+          "type": "table",
+          "headers": ["Категория", "Операторы"],
+          "rows": [
+            ["Арифметические", "`+`, `-`, `*`, `/`, `%`"],
+            ["Присваивания", "`=`, `+=`, `-=`, `*=`, `/=`, `%=`"],
+            ["Инкремент/декремент", "`++`, `--` (префикс и постфикс)"],
+            ["Сравнения", "`==`, `!=`, `<`, `>`, `<=`, `>=`"],
+            ["Логические", "`!`, `&&`, `||`, `xor`"],
+            ["Побитовые", "`and`, `or`, `xor`, `inv`, `shl`, `shr`, `ushr`"]
+          ]
+        },
+        {
+          "type": "callout",
+          "variant": "success",
+          "title": "Главные выводы лекции",
+          "text": "Строки **неизменяемы** — используйте `StringBuilder` для эффективной конкатенации. `val` запрещает **переназначение**, но не изменение содержимого. Всегда помните о **приоритете операций** и используйте **скобки** при сомнениях."
+        }
+      ]
+    },
+
+    {
+      "type": "title",
+      "title": "Спасибо за внимание!",
+      "subtitle": "Лекция 2. Работа со строками. Простейшие операции. Приоритет операций.",
+      "author": "Степанов Павел Валериевич"
+    }
+  ]
+}
