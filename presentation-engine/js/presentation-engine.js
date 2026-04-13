@@ -43,55 +43,19 @@ class PresentationEngine {
 
     goToSlide(index, animate = true) {
         if (index < 0 || index >= this.totalSlides) return;
-        if (this.isAnimating && animate) return;
-
-        const prevIndex = this.currentIndex;
         this.currentIndex = index;
+        this.isAnimating = false;
+        clearTimeout(this.animationTimeout);
 
-        if (animate) {
-            this.isAnimating = true;
-            clearTimeout(this.animationTimeout);
-
-            const goingForward = index > prevIndex;
-
-            if (this.slideElements[prevIndex]) {
-                const prevEl = this.slideElements[prevIndex];
-                prevEl.classList.remove('active');
-                prevEl.classList.add(goingForward ? 'exit-left' : '');
-
-                const nextEl = this.slideElements[index];
-                if (nextEl) {
-                    nextEl.style.transition = 'none';
-                    nextEl.style.transform = goingForward ? 'translateX(60px)' : 'translateX(-60px)';
-                    nextEl.style.opacity = '0';
-
-                    nextEl.offsetHeight;
-
-                    nextEl.classList.add('active');
-                    nextEl.style.transition = '';
-                    nextEl.style.transform = '';
-                    nextEl.style.opacity = '';
-                }
+        this.slideElements.forEach((el, i) => {
+            el.classList.remove('active', 'exit-left');
+            el.style.transition = '';
+            el.style.transform = '';
+            el.style.opacity = '';
+            if (i === index) {
+                el.classList.add('active');
             }
-
-            this.animationTimeout = setTimeout(() => {
-                this.slideElements.forEach((el, i) => {
-                    if (i !== this.currentIndex) {
-                        el.classList.remove('active', 'exit-left');
-                        el.style.transform = '';
-                        el.style.opacity = '';
-                    }
-                });
-                this.isAnimating = false;
-            }, 550);
-        } else {
-            this.slideElements.forEach((el, i) => {
-                el.classList.remove('active', 'exit-left');
-                if (i === index) {
-                    el.classList.add('active');
-                }
-            });
-        }
+        });
 
         if (this.slideElements[index]) {
             this.slideElements[index].scrollTop = 0;

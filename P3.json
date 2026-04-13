@@ -1,0 +1,1107 @@
+{
+    "meta": {
+      "title": "Программирование на языке Kotlin",
+      "subtitle": "Лекция 3. Массивы. Коллекции. Интервалы и прогрессии.",
+      "description": "Типы массивов, многомерные массивы, коллекции List/Set/Map (mutable и immutable), интерфейсы коллекций, интервалы и прогрессии в Kotlin",
+      "author": "Степанов Павел Валериевич",
+      "date": "2024",
+      "language": "kotlin",
+      "version": "1.0",
+      "tags": ["kotlin", "arrays", "collections", "list", "set", "map", "ranges", "progressions"]
+    },
+    "slides": [
+      {
+        "type": "title",
+        "title": "Программирование на языке Kotlin",
+        "subtitle": "Лекция 3. Массивы. Коллекции. Интервалы и прогрессии.",
+        "author": "Сертифицированный преподаватель Samsung Innovation Campus & Yandex Academic Programs — Степанов Павел Валериевич"
+      },
+  
+      {
+        "type": "section",
+        "sectionNumber": "Часть 01",
+        "title": "Массивы"
+      },
+  
+      {
+        "type": "content",
+        "title": "Типы массивов в Kotlin",
+        "content": [
+          {
+            "type": "text",
+            "text": "Kotlin предоставляет **специализированные типы массивов** для каждого примитивного типа:"
+          },
+          {
+            "type": "table",
+            "headers": ["Тип массива", "Тип элементов", "Функция создания"],
+            "rows": [
+              ["`IntArray`", "`Int`", "`intArrayOf()`"],
+              ["`LongArray`", "`Long`", "`longArrayOf()`"],
+              ["`DoubleArray`", "`Double`", "`doubleArrayOf()`"],
+              ["`FloatArray`", "`Float`", "`floatArrayOf()`"],
+              ["`CharArray`", "`Char`", "`charArrayOf()`"],
+              ["`BooleanArray`", "`Boolean`", "`booleanArrayOf()`"],
+              ["`ShortArray`", "`Short`", "`shortArrayOf()`"],
+              ["`ByteArray`", "`Byte`", "`byteArrayOf()`"]
+            ]
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "fun main() {\n    val ints = intArrayOf(1, 2, 3, 4, 5)\n    println(ints.joinToString()) // 1, 2, 3, 4, 5\n\n    val chars = charArrayOf('A', 'b', 'C')\n    println(chars.joinToString()) // A, b, C\n\n    val dbls = doubleArrayOf(1.25, 0.71, 0.42)\n    println(dbls.joinToString()) // 1.25, 0.71, 0.42\n}"
+          },
+          {
+            "type": "callout",
+            "variant": "info",
+            "title": "StringArray не существует!",
+            "text": "В Kotlin нет типа `StringArray`. Для строковых массивов используйте `arrayOf(\"array\", \"of\", \"strings\")`."
+          }
+        ],
+        "reference": "https://hyperskill.org/learn/step/4564"
+      },
+  
+      {
+        "type": "content",
+        "title": "Создание массива заданного размера",
+        "content": [
+          {
+            "type": "text",
+            "text": "При создании массива с указанием только **размера**, все элементы инициализируются **значениями по умолчанию**:"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "fun main() {\n    val ints = IntArray(5)\n    println(ints.joinToString()) // 0, 0, 0, 0, 0\n\n    val dbls = DoubleArray(7)\n    println(dbls.joinToString()) // 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0\n}"
+          },
+          {
+            "type": "table",
+            "headers": ["Тип", "Значение по умолчанию"],
+            "rows": [
+              ["`IntArray`, `LongArray`, `ShortArray`, `ByteArray`", "`0`"],
+              ["`DoubleArray`, `FloatArray`", "`0.0`"],
+              ["`BooleanArray`", "`false`"],
+              ["`CharArray`", "`'\\u0000'` (null-символ)"]
+            ]
+          }
+        ],
+        "reference": "https://hyperskill.org/learn/step/4564"
+      },
+  
+      {
+        "type": "content",
+        "title": "Конструктор массива с лямбдой",
+        "content": [
+          {
+            "type": "text",
+            "text": "Конструктор `IntArray(size) { lambda }` принимает размер и **функцию**, которая вычисляет значение каждого элемента по его индексу:"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "fun main() {\n    // Элементы вычисляются по индексу: i + 2\n    val ints = IntArray(10) { i -> i + 2 }\n    println(ints.joinToString()) // 2, 3, 4, 5, 6, 7, 8, 9, 10, 11\n\n    // Все элементы равны 1\n    val onlyOne = IntArray(5) { 1 }\n    println(onlyOne.joinToString()) // 1, 1, 1, 1, 1\n\n    // Заполнение через apply + fill\n    val onlyMinusOne = IntArray(10).apply { fill(-1) }\n    println(onlyMinusOne.joinToString()) // -1, -1, -1, -1, ...\n}",
+            "highlightLines": [3, 7, 11]
+          },
+          {
+            "type": "callout",
+            "variant": "tip",
+            "title": "Лямбда-инициализация — мощный инструмент",
+            "text": "Вы можете использовать **любое выражение** внутри лямбды: `IntArray(10) { it * it }` создаст массив квадратов: `[0, 1, 4, 9, 16, ...]`."
+          }
+        ],
+        "reference": "https://hyperskill.org/learn/step/4564"
+      },
+  
+      {
+        "type": "content",
+        "title": "Чтение массива с консоли",
+        "content": [
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "fun main() {\n    // Способ 1: числа построчно (IntArray)\n    val nums1 = IntArray(5) { readln().toInt() }\n    println(nums1.joinToString())\n\n    // Способ 2: числа построчно (Array<Int>)\n    val nums2 = Array(3) { readln().toInt() }\n    println(nums2.joinToString())\n\n    // Способ 3: числа через пробел в одной строке\n    val nums3 = readln().split(\" \").map { it.toInt() }\n    println(nums3.joinToString())\n}",
+            "highlightLines": [3, 7, 11]
+          },
+          {
+            "type": "callout",
+            "variant": "info",
+            "title": "IntArray vs Array<Int>",
+            "text": "`IntArray` — примитивный массив (аналог `int[]` в Java). `Array<Int>` — массив объектов-обёрток (`Integer[]`). `IntArray` **эффективнее** по памяти."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Доступ к элементам массива",
+        "content": [
+          {
+            "type": "text",
+            "text": "Доступ к элементам осуществляется по **индексу** (от `0` до `array.size - 1`):"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "val numbers = IntArray(3) // [0, 0, 0]\nnumbers[0] = 1            // [1, 0, 0]\nnumbers[1] = 2            // [1, 2, 0]\nnumbers[2] = numbers[0] + numbers[1] // [1, 2, 3]\n\nprintln(numbers[0]) // 1 — первый элемент\nprintln(numbers[2]) // 3 — последний элемент",
+            "highlightLines": [2, 3, 4]
+          },
+          {
+            "type": "callout",
+            "variant": "error",
+            "title": "ArrayIndexOutOfBoundsException",
+            "text": "Обращение к индексу за пределами массива (`numbers[3]` при `size = 3`) вызовет исключение. Всегда проверяйте границы!"
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Сравнение массивов",
+        "content": [
+          {
+            "type": "text",
+            "text": "Для сравнения **содержимого** двух массивов используйте `contentEquals()`:"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "val numbers1 = intArrayOf(1, 2, 3, 4)\nval numbers2 = intArrayOf(1, 2, 3, 4)\nval numbers3 = intArrayOf(1, 2, 3)\n\nprintln(numbers1.contentEquals(numbers2)) // true\nprintln(numbers1.contentEquals(numbers3)) // false",
+            "highlightLines": [5, 6]
+          },
+          {
+            "type": "callout",
+            "variant": "warning",
+            "title": "== не сравнивает содержимое!",
+            "text": "Операторы `==` и `===` сравнивают **ссылки**, а не содержимое. Два массива с одинаковыми элементами будут `==` только если это **один и тот же объект**."
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "val a = intArrayOf(1, 2, 3)\nval b = intArrayOf(1, 2, 3)\nprintln(a == a)   // true  — тот же объект\nprintln(a === b)  // false — разные объекты"
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Итерация по массиву",
+        "content": [
+          {
+            "type": "columns",
+            "columns": [
+              [
+                {
+                  "type": "text",
+                  "text": "**По элементам** — `for (element in array)`:"
+                },
+                {
+                  "type": "code",
+                  "language": "kotlin",
+                  "code": "val days = arrayOf(\"Sun\", \"Mon\",\n    \"Tue\", \"Wed\", \"Thu\",\n    \"Fri\", \"Sat\")\nfor (day in days) {\n    println(day)\n}"
+                }
+              ],
+              [
+                {
+                  "type": "text",
+                  "text": "**По индексам** — `for (i in array.indices)`:"
+                },
+                {
+                  "type": "code",
+                  "language": "kotlin",
+                  "code": "val days = arrayOf(\"Sun\", \"Mon\",\n    \"Tue\", \"Wed\", \"Thu\",\n    \"Fri\", \"Sat\")\nfor (i in days.indices) {\n    println(\"$i: ${days[i]}\")\n}"
+                }
+              ]
+            ]
+          },
+          {
+            "type": "text",
+            "text": "**По диапазону индексов** — только рабочие дни `[1..5]`:"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "for (index in 1..5) {\n    println(\"$index: ${days[index]}\")\n}"
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Строковые массивы",
+        "content": [
+          {
+            "type": "text",
+            "text": "Для строковых массивов используется универсальная функция `arrayOf()`:"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "// Создание\nval stringArray = arrayOf(\"array\", \"of\", \"strings\")\n\n// С явным указанием типа\nval typed = arrayOf<String>(\"array\", \"of\", \"strings\")\n\n// Пустой массив\nval empty = emptyArray<String>()\n\n// Вывод содержимого\nval names = arrayOf(\"Ivan\", \"Olga\", \"Petr\", \"Maria\")\nprintln(names.joinToString()) // Ivan, Olga, Petr, Maria"
+          },
+          {
+            "type": "text",
+            "text": "**Сложение** массивов оператором `+`:"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "val a = arrayOf(\"Acrux\", \"Gacrux\", \"Imai\", \"Mimosa\")\nval b = arrayOf(\"Ginan\", \"Mu Crucis\")\nval merged = a + b\nprintln(merged.joinToString()) // Acrux, Gacrux, Imai, Mimosa, Ginan, Mu Crucis"
+          }
+        ],
+        "reference": "https://hyperskill.org/learn/step/11477"
+      },
+  
+      {
+        "type": "content",
+        "title": "Изменение массивов: val vs var",
+        "content": [
+          {
+            "type": "text",
+            "text": "И `val`, и `var` позволяют **изменять элементы** по индексу:"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "val arr = arrayOf(\"Acrux\", \"Gacrux\", \"Imai\")\narr[1] = \"star\"    // ✅ Можно — меняем ЭЛЕМЕНТ\nprintln(arr[1])    // star"
+          },
+          {
+            "type": "text",
+            "text": "Но только `var` позволяет **добавлять элементы** (через переназначение):"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "var stars = arrayOf(\"Acrux\", \"Gacrux\", \"Imai\")\nstars += \"Mimosa\"  // ✅ var — можно (создаётся новый массив!)\nprintln(stars.joinToString()) // Acrux, Gacrux, Imai, Mimosa\n\nval fixed = arrayOf(\"Acrux\", \"Gacrux\")\nfixed += \"Imai\"    // ❌ val — ошибка компиляции!",
+            "highlightLines": [2, 6]
+          },
+          {
+            "type": "callout",
+            "variant": "warning",
+            "title": "Массив пересоздаётся!",
+            "text": "Оператор `+=` на массиве **не добавляет** элемент — он **создаёт новый массив** и переназначает переменную. Это медленная операция O(n). Для частого добавления используйте `MutableList`."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Двумерные массивы",
+        "content": [
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "// Матрица 3×4, заполненная нулями\nval array2D = arrayOf(\n    arrayOf(0, 0, 0, 0),\n    arrayOf(0, 0, 0, 0),\n    arrayOf(0, 0, 0, 0)\n)\n\n// Вложенные массивы могут иметь разную длину\nval jagged = arrayOf(\n    arrayOf(0),\n    arrayOf(1, 2),\n    arrayOf(3, 4, 5)\n)\n\n// Доступ к элементу: [строка][столбец]\nprintln(array2D[0][0]) // 0\nprintln(jagged[2][1])  // 4"
+          },
+          {
+            "type": "text",
+            "text": "Для вывода содержимого многомерного массива используйте `contentDeepToString()`:"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "val arr = arrayOf(\n    charArrayOf('k'),\n    charArrayOf('o', 't'),\n    charArrayOf('l', 'i', 'n')\n)\nprintln(arr.contentDeepToString()) // [[k], [o, t], [l, i, n]]"
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Трёхмерные массивы",
+        "content": [
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "val array3D = arrayOf(\n    arrayOf(arrayOf(0, 1), arrayOf(2, 3)),\n    arrayOf(arrayOf(4, 5), arrayOf(6, 7))\n)\n\nprintln(array3D.contentDeepToString())\n// [[[0, 1], [2, 3]], [[4, 5], [6, 7]]]\n\nprintln(array3D[0][0][1]) // 1\nprintln(array3D[1][0][1]) // 5\nprintln(array3D[1][1][1]) // 7",
+            "highlightLines": [9, 10, 11]
+          },
+          {
+            "type": "callout",
+            "variant": "info",
+            "title": "Обращение: [слой][строка][столбец]",
+            "text": "Каждый уровень вложенности добавляет одно измерение. `array3D[1][0][1]` = второй слой → первая строка → второй элемент."
+          }
+        ]
+      },
+  
+      {
+        "type": "section",
+        "sectionNumber": "Часть 02",
+        "title": "Коллекции — основы"
+      },
+  
+      {
+        "type": "content",
+        "title": "Коллекции в Kotlin",
+        "content": [
+          {
+            "type": "text",
+            "text": "Все коллекции в Kotlin располагаются в пакете `kotlin.collections`. Они делятся на **изменяемые** (mutable) и **неизменяемые** (immutable)."
+          },
+          {
+            "type": "comparison",
+            "goodLabel": "Immutable (неизменяемые)",
+            "badLabel": "Mutable (изменяемые)",
+            "good": "Только **чтение**: доступ к элементам\\nСодержимое **не изменится** со временем\\nПример: список страниц в книге\\n`listOf()`, `setOf()`, `mapOf()`",
+            "bad": "Чтение **и запись**: добавление, удаление, обновление\\nСодержимое **может меняться**\\nПример: список любимых ресторанов\\n`mutableListOf()`, `mutableSetOf()`, `mutableMapOf()`"
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "List, Set, Map — три кита коллекций",
+        "content": [
+          {
+            "type": "table",
+            "headers": ["Коллекция", "Порядок", "Дубликаты", "Доступ"],
+            "rows": [
+              ["**List** (список)", "✅ Сохраняет порядок", "✅ Допускает", "По индексу `[i]`"],
+              ["**Set** (множество)", "❌ Не гарантирует порядок", "❌ Только уникальные", "Проверка наличия `in`"],
+              ["**Map** (словарь)", "❌ Не гарантирует порядок", "❌ Уникальные ключи", "По ключу `[key]`"]
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "info",
+            "title": "Все три существуют в двух вариантах",
+            "text": "`List` / `MutableList`, `Set` / `MutableSet`, `Map` / `MutableMap`. Неизменяемые варианты — для безопасности, изменяемые — когда нужно модифицировать."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Общие свойства и методы коллекций",
+        "content": [
+          {
+            "type": "text",
+            "text": "Методы, доступные **любой** коллекции (immutable и mutable):"
+          },
+          {
+            "type": "table",
+            "headers": ["Метод/свойство", "Описание"],
+            "rows": [
+              ["`size`", "Размер коллекции"],
+              ["`isEmpty()`", "Пуста ли коллекция?"],
+              ["`contains(element)`", "Содержит ли элемент?"],
+              ["`containsAll(elements)`", "Содержит ли все элементы другой коллекции?"],
+              ["`indexOf(element)`", "Индекс первого вхождения (или -1)"],
+              ["`joinToString()`", "Преобразование в строку"]
+            ]
+          },
+          {
+            "type": "text",
+            "text": "Дополнительные методы **только для mutable** коллекций:"
+          },
+          {
+            "type": "table",
+            "headers": ["Метод", "Описание"],
+            "rows": [
+              ["`clear()`", "Удалить все элементы"],
+              ["`remove(element)`", "Удалить первое вхождение элемента"],
+              ["`removeAll(elements)`", "Удалить все совпадающие элементы"]
+            ]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Идиома: оператор in",
+        "content": [
+          {
+            "type": "text",
+            "text": "Для проверки наличия элемента в коллекции рекомендуется использовать **оператор `in`** вместо `contains()`:"
+          },
+          {
+            "type": "comparison",
+            "goodLabel": "Идиоматично ✅",
+            "badLabel": "Многословно",
+            "good": "`println(elem in collection)`\\nЧитается как \"элемент в коллекции\"",
+            "bad": "`println(collection.contains(elem))`\\nТо же самое, но длиннее"
+          },
+          {
+            "type": "callout",
+            "variant": "tip",
+            "text": "Оператор `in` работает одинаково для **коллекций**, **массивов** и **диапазонов**. Это рекомендация из [официальной документации Kotlin](https://kotlinlang.org/docs/idioms.html)."
+          }
+        ]
+      },
+  
+      {
+        "type": "section",
+        "sectionNumber": "Часть 03",
+        "title": "List и MutableList"
+      },
+  
+      {
+        "type": "content",
+        "title": "List — неизменяемый список",
+        "content": [
+          {
+            "type": "text",
+            "text": "`List` — неизменяемая коллекция, которая **сохраняет порядок** и **допускает дубликаты**:"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "val cars = listOf<String>(\"BMW\", \"Honda\", \"Mercedes\")\nprintln(cars) // [BMW, Honda, Mercedes]\n\n// Тип выводится из контекста\nval nums = listOf(1, 2, 3)\n\n// Пустой список\nval empty = emptyList<String>()\n\n// Через buildList\nval list = buildList {\n    add(\"Марта\")\n    addAll(listOf(\"Эмма\", \"Ким\"))\n    add(\"Кира\")\n}\nprintln(list) // [Марта, Эмма, Ким, Кира]",
+            "highlightLines": [1, 11]
+          },
+          {
+            "type": "callout",
+            "variant": "error",
+            "title": "Нельзя изменить!",
+            "text": "`cars[0] = \"Renault\"` — **ошибка компиляции**. List не поддерживает модификацию содержимого."
+          }
+        ],
+        "reference": "https://hyperskill.org/learn/step/10730"
+      },
+  
+      {
+        "type": "content",
+        "title": "List — свойства и методы",
+        "content": [
+          {
+            "type": "table",
+            "headers": ["Метод/свойство", "Описание", "Пример"],
+            "rows": [
+              ["`size`", "Размер списка", "`cars.size` → `3`"],
+              ["`isEmpty()`", "Пуст ли список?", "`cars.isEmpty()` → `false`"],
+              ["`get(index)` / `[index]`", "Элемент по индексу", "`cars[0]` → `\"BMW\"`"],
+              ["`indexOf(element)`", "Индекс первого вхождения", "`cars.indexOf(\"Honda\")` → `1`"],
+              ["`contains(element)`", "Содержит ли элемент?", "`\"BMW\" in cars` → `true`"]
+            ]
+          },
+          {
+            "type": "text",
+            "text": "Перебор элементов списка:"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "val students = listOf(\"Olga\", \"Maria\", \"Alexa\")\nfor (student in students) {\n    println(\"Hello $student!\")\n}"
+          }
+        ],
+        "reference": "https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/"
+      },
+  
+      {
+        "type": "content",
+        "title": "MutableList — изменяемый список",
+        "content": [
+          {
+            "type": "text",
+            "text": "`MutableList` — версия List, которая позволяет **добавлять**, **удалять** и **изменять** элементы:"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "// Проблема: List не позволяет добавить элемент\nvar places = listOf(\"Париж\", \"Москва\", \"Токио\")\nplaces += \"Санкт-Петербург\" // ⚠️ Переназначение — медленно!\n\n// Решение: MutableList\nval places2 = mutableListOf(\"Париж\", \"Москва\", \"Токио\")\nplaces2.add(\"Санкт-Петербург\") // ✅ Быстро!\nprintln(places2) // [Париж, Москва, Токио, Санкт-Петербург]",
+            "highlightLines": [3, 7]
+          },
+          {
+            "type": "callout",
+            "variant": "tip",
+            "title": "Конвертация List ↔ MutableList",
+            "text": "`listOf(...).toMutableList()` — из неизменяемого в изменяемый. `mutableList.toList()` — обратно."
+          }
+        ],
+        "reference": "https://hyperskill.org/learn/step/11032"
+      },
+  
+      {
+        "type": "content",
+        "title": "MutableList — добавление и изменение",
+        "content": [
+          {
+            "type": "table",
+            "headers": ["Метод", "Описание"],
+            "rows": [
+              ["`add(element)`", "Добавить элемент в конец"],
+              ["`add(index, element)`", "Вставить элемент по индексу"],
+              ["`set(index, element)` / `[index] = element`", "Заменить элемент по индексу"],
+              ["`addAll(elements)`", "Добавить все элементы коллекции"]
+            ]
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "val products = mutableListOf(\"Молоко\", \"Сыр\", \"Кока-кола\")\nproducts.add(\"Чипсы\")      // добавить в конец\nproducts[0] = \"Вода\"        // заменить первый элемент\nprintln(products) // [Вода, Сыр, Кока-кола, Чипсы]\n\nval dadsProducts = listOf(\"Банан\", \"Арбуз\", \"Яблоко\")\nproducts.addAll(dadsProducts)\nprintln(products) // [Вода, Сыр, Кока-кола, Чипсы, Банан, Арбуз, Яблоко]"
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "MutableList — удаление и перебор",
+        "content": [
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "val products = mutableListOf(\"Milk\", \"Cheese\", \"Coke\")\n\nproducts.removeAt(0)       // Удалить по индексу\nprintln(products)          // [Cheese, Coke]\n\nproducts.remove(\"Coke\")    // Удалить по значению\nprintln(products)          // [Cheese]\n\nproducts.clear()           // Удалить всё\nprintln(products)          // []",
+            "highlightLines": [3, 6, 9]
+          },
+          {
+            "type": "text",
+            "text": "Перебор значений:"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "val products = mutableListOf(\"Cheese\", \"Milk\", \"Coke\")\nfor (product in products) {\n    println(product)\n}"
+          }
+        ],
+        "reference": "https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-mutable-list/"
+      },
+  
+      {
+        "type": "section",
+        "sectionNumber": "Часть 04",
+        "title": "Set и MutableSet"
+      },
+  
+      {
+        "type": "content",
+        "title": "Set — неизменяемое множество",
+        "content": [
+          {
+            "type": "text",
+            "text": "`Set` — неупорядоченная коллекция **уникальных** элементов. Дубликаты автоматически удаляются:"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "val visitors = setOf(\"Vlad\", \"Vanya\", \"Liza\", \"Liza\")\nprintln(visitors) // [Vlad, Vanya, Liza] — дубликат удалён!",
+            "highlightLines": [2]
+          },
+          {
+            "type": "text",
+            "text": "Инициализация:"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "val languages = setOf(\"English\", \"Russian\", \"Italian\")\nval empty = emptySet<Int>()\n\nval set = buildSet {\n    add('a')\n    addAll(setOf('b', 'c'))\n    add('d')\n}\nprintln(set) // [a, b, c, d]"
+          },
+          {
+            "type": "callout",
+            "variant": "tip",
+            "title": "Когда использовать Set?",
+            "text": "Когда вам нужны **уникальные** элементы и **не важен порядок**: список посетителей, теги, уникальные ID."
+          }
+        ],
+        "reference": "https://hyperskill.org/learn/step/11290"
+      },
+  
+      {
+        "type": "content",
+        "title": "Set — свойства, методы и операции",
+        "content": [
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "val visitors = setOf(\"Andrew\", \"Mike\")\nprintln(visitors.size)         // 2\nprintln(visitors.isEmpty())    // false\nprintln(\"Mike\" in visitors)    // true\nprintln(visitors.indexOf(\"Mike\")) // 1\nprintln(visitors.first())      // Andrew\nprintln(visitors.last())       // Mike"
+          },
+          {
+            "type": "text",
+            "text": "**Операции** с множествами:"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "val a = setOf(\"Banana\", \"Lime\", \"Strawberry\")\nval b = setOf(\"Strawberry\")\n\nprintln(a + b) // [Banana, Lime, Strawberry] — объединение\nprintln(a - b) // [Banana, Lime] — разность\n\n// Удаление дубликатов из списка\nval groceries = mutableListOf(\"Pen\", \"Apple\", \"Pen\", \"Apple\")\nprintln(groceries.toSet()) // [Pen, Apple]",
+            "highlightLines": [4, 5, 9]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "MutableSet — изменяемое множество",
+        "content": [
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "val groceries = mutableSetOf(\"Banana\", \"Strawberry\")\n\n// Добавление\ngroceries.add(\"Water\")\nprintln(groceries) // [Banana, Strawberry, Water]\n\n// Дубликаты игнорируются!\ngroceries.add(\"Banana\")\nprintln(groceries) // [Banana, Strawberry, Water] — без изменений"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "// Удаление\nval items = mutableSetOf(\"Apple\", \"Water\", \"Banana\", \"Pen\")\nitems.remove(\"Apple\")\nprintln(items) // [Water, Banana, Pen]\n\nval useless = setOf(\"Banana\", \"Pen\")\nitems.removeAll(useless)\nprintln(items) // [Water]\n\nitems.clear()\nprintln(items) // []"
+          }
+        ],
+        "reference": "https://hyperskill.org/learn/step/11897"
+      },
+  
+      {
+        "type": "section",
+        "sectionNumber": "Часть 05",
+        "title": "Map и MutableMap"
+      },
+  
+      {
+        "type": "content",
+        "title": "Map — неизменяемый словарь",
+        "content": [
+          {
+            "type": "text",
+            "text": "`Map` хранит пары **ключ-значение**. Ключи **уникальны**. Доступ к значению по ключу — **O(1)**."
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "val students = mapOf(\n    \"Zhenya\" to 5,\n    \"Vlad\" to 4,\n    \"Nina\" to 5\n)\nprintln(students)          // {Zhenya=5, Vlad=4, Nina=5}\nprintln(students[\"Nina\"])   // 5 — доступ по ключу",
+            "highlightLines": [2, 3, 4, 7]
+          },
+          {
+            "type": "callout",
+            "variant": "info",
+            "title": "Конструкция to",
+            "text": "`\"Zhenya\" to 5` создаёт объект `Pair<String, Int>`. Это инфиксная функция: `\"key\".to(\"value\")` = `\"key\" to \"value\"`."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Тип Pair и инициализация Map",
+        "content": [
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "// Pair — пара значений\nval (name, grade) = Pair(\"Ivan\", 5)\nprintln(\"$name: $grade\") // Ivan: 5\n\nval p = Pair(2, 3)\nprintln(\"${p.first} ${p.second}\") // 2 3\n\n// Конструкция to — сахар для Pair\nval (n, g) = \"Vlad\" to 4\nprintln(\"$n: $g\") // Vlad: 4"
+          },
+          {
+            "type": "code",
+            "language": "kotlin \"Toyota\" to 450.5\ncars += \"BMW\" to 500.15\nprintln(cars) // {Toyota=450.5, BMW=500.15}\n\ncars -= \"BMW\"\nprintln(cars) // {Toyota=450.5}"
+          }
+        ]
+      },
+  
+      {
+        "type": "section",
+        "sectionNumber": "Часть 06",
+        "title": "Иерархия интерфейсов коллекций"
+      },
+  
+      {
+        "type": "content",
+        "title": "Iterable и MutableIterable",
+        "content": [
+          {
+            "type": "text",
+            "text": "В Kotlin есть два базовых интерфейса для работы с последовательностями элементов:"
+          },
+          {
+            "type": "definition",
+            "term": "Iterable<T>",
+            "description": "Предоставляет методы `iterator()`, `forEach()`, `contains()`, `count()`, `drop()`, `filter()` и др."
+          },
+          {
+            "type": "definition",
+            "term": "MutableIterable<T>",
+            "description": "Расширяет Iterable, добавляя поддержку **удаления элементов** во время итерации: `remove()`, `removeAll()`."
+          },
+          {
+            "type": "callout",
+            "variant": "warning",
+            "title": "drop() vs remove()",
+            "text": "`drop()` **возвращает новый** объект без элемента (из Iterable). `remove()` **удаляет** элемент из текущего объекта (из MutableIterable). Итератор можно использовать **только один раз** — для повторной итерации создайте новый."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Иерархия коллекций Kotlin",
+        "content": [
+          {
+            "type": "text",
+            "text": "Как связаны интерфейсы коллекций:"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "Iterable<T>\n  └── Collection<T>        ← корень неизменяемых\n        ├── List<T>\n        └── Set<T>\n\nMutableIterable<T>\n  └── MutableCollection<T> ← корень изменяемых\n        ├── MutableList<T>\n        └── MutableSet<T>\n\nMap<K, V>               ← отдельная ветка!\nMutableMap<K, V>",
+            "filename": "иерархия"
+          },
+          {
+            "type": "callout",
+            "variant": "warning",
+            "title": "Map — не Collection!",
+            "text": "Словари (`Map`) **не реализуют** интерфейсы `Collection` или `Iterable`. У них свои методы, потому что они хранят **пары** ключ-значение, а не отдельные элементы."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Интерфейс Collection — итерация",
+        "content": [
+          {
+            "type": "text",
+            "text": "Три способа перебора элементов `Collection<T>`:"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "// Способ 1: цикл for\nfun printAll(strings: Collection<String>) {\n    for (str in strings) print(\"$str \")\n}\n\n// Способ 2: forEach\nfun printAll(songs: Collection<String>) {\n    songs.forEach { print(\"$it \") }\n}\n\n// Способ 3: итератор\nfun printAll(songs: Collection<String>) {\n    val iter = songs.iterator()\n    while (iter.hasNext()) {\n        print(\"${iter.next()} \")\n    }\n}\n\nval songs = listOf(\"Creep\", \"Idioteque\", \"Street Spirit\")\nprintAll(songs) // Creep Idioteque Street Spirit"
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Collection — полезные методы",
+        "content": [
+          {
+            "type": "table",
+            "headers": ["Метод", "Описание", "Пример"],
+            "rows": [
+              ["`count { predicate }`", "Количество элементов по условию", "`list.count { it.length > 3 }`"],
+              ["`drop(n)`", "Новый список без первых n элементов", "`list.drop(2)`"],
+              ["`filter { predicate }`", "Элементы, удовлетворяющие условию", "`list.filter { \"t\" in it }`"],
+              ["`find { predicate }`", "Первый элемент по условию", "`list.find { it.startsWith(\"I\") }`"],
+              ["`joinToString(sep)`", "Объединить в строку", "`list.joinToString(\" | \")`"],
+              ["`minus(element)`", "Коллекция без элемента", "`list.minus(\"Creep\")`"],
+              ["`random()`", "Случайный элемент", "`list.random()`"]
+            ]
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "val songs = listOf(\"Creep\", \"Idioteque\", \"Street Spirit\", \"Paranoid Android\")\n\nprintln(songs.joinToString(\" | \"))  // Creep | Idioteque | Street Spirit | Paranoid Android\nprintln(songs.find { \"I\" in it })   // Idioteque\nprintln(songs.filter { \"t\" in it }) // [Idioteque, Street Spirit]\nprintln(songs.minus(\"Creep\"))       // [Idioteque, Street Spirit, Paranoid Android]"
+          }
+        ]
+      },
+  
+      {
+        "type": "section",
+        "sectionNumber": "Часть 07",
+        "title": "Интервалы и прогрессии"
+      },
+  
+      {
+        "type": "content",
+        "title": "Что такое интервал (Range)?",
+        "content": [
+          {
+            "type": "text",
+            "text": "**Интервал** (range) в Kotlin — это объект, представляющий диапазон значений от `a` до `b`. Создаётся оператором `..` или функцией `rangeTo()`."
+          },
+          {
+            "type": "list",
+            "items": [
+              "**Не хранит** все элементы в памяти — это «инструкция» для генерации",
+              "Используется в **циклах** `for` для итерации",
+              "Можно преобразовать в **коллекцию**: `(1..10).toList()`",
+              "Основная операция — `contains`, используемая через `in` / `!in`"
+            ]
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "if (i in 1..4) {  // эквивалент: 1 <= i && i <= 4\n    print(i)\n}\n\n// Создание коллекции из диапазона\nval list = (1..10).toList()\nprintln(list) // [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Итерация по диапазонам",
+        "content": [
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "fun main() {\n    // Прямой порядок\n    for (i in 1..4) print(i)       // 1234\n    println()\n\n    // Обратный порядок\n    for (i in 4 downTo 1) print(i) // 4321\n    println()\n\n    // С шагом\n    for (i in 1..8 step 2) print(i)       // 1357\n    println()\n    for (i in 8 downTo 1 step 2) print(i) // 8642\n    println()\n\n    // Исключая последний элемент\n    for (i in 1 until 10) print(i) // 123456789 (без 10!)\n}",
+            "highlightLines": [3, 7, 11, 13, 17]
+          },
+          {
+            "type": "table",
+            "headers": ["Конструкция", "Описание", "Пример"],
+            "rows": [
+              ["`a..b`", "От a до b **включительно**", "`1..5` → 1, 2, 3, 4, 5"],
+              ["`a until b`", "От a до b **исключая b**", "`1 until 5` → 1, 2, 3, 4"],
+              ["`a downTo b`", "От a до b **в обратном** порядке", "`5 downTo 1` → 5, 4, 3, 2, 1"],
+              ["`step n`", "Шаг итерации", "`1..10 step 3` → 1, 4, 7, 10"]
+            ]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Диапазоны для пользовательских типов",
+        "content": [
+          {
+            "type": "text",
+            "text": "Диапазоны применимы к **любым `Comparable` типам**. Можно создавать диапазоны для своих классов:"
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "class Version(val major: Int, val minor: Int) : Comparable<Version> {\n    override fun compareTo(other: Version): Int {\n        if (this.major != other.major) {\n            return this.major - other.major\n        }\n        return this.minor - other.minor\n    }\n}\n\nfun main() {\n    val versionRange = Version(1, 11)..Version(1, 30)\n    println(Version(0, 9) in versionRange)  // false\n    println(Version(1, 20) in versionRange) // true\n}",
+            "highlightLines": [11, 12, 13]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Прогрессии (Progressions)",
+        "content": [
+          {
+            "type": "text",
+            "text": "Диапазоны целочисленных типов (`Int`, `Long`, `Char`) являются **арифметическими прогрессиями** с тремя свойствами:"
+          },
+          {
+            "type": "definition",
+            "term": "first",
+            "description": "Первый элемент прогрессии"
+          },
+          {
+            "type": "definition",
+            "term": "last",
+            "description": "Последний элемент прогрессии"
+          },
+          {
+            "type": "definition",
+            "term": "step",
+            "description": "Шаг прогрессии (не может быть 0)"
+          },
+          {
+            "type": "text",
+            "text": "Специальные типы: `IntProgression`, `LongProgression`, `CharProgression`."
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "fun main() {\n    // Прогрессия 1..10, step = 1\n    for (i in 1..10) print(i) // 12345678910\n\n    // Прогрессия 1..8, step = 2\n    for (i in 1..8 step 2) print(i) // 1357\n\n    // Обратная прогрессия\n    for (i in 4 downTo 1) print(i) // 4321\n}"
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Прогрессии и функции коллекций",
+        "content": [
+          {
+            "type": "text",
+            "text": "Прогрессии реализуют `Iterable<N>`, поэтому можно использовать **все функции коллекций**: `map`, `filter`, `toList` и т.д."
+          },
+          {
+            "type": "code",
+            "language": "kotlin",
+            "code": "fun main() {\n    // Фильтрация чётных чисел\n    println((1..10).filter { it % 2 == 0 })\n    // [2, 4, 6, 8, 10]\n\n    // Преобразование в список квадратов\n    println((1..5).map { it * it })\n    // [1, 4, 9, 16, 25]\n\n    // Сумма элементов прогрессии\n    println((1..100).sum())\n    // 5050\n\n    // Преобразование в список\n    println((1..5 step 2).toList())\n    // [1, 3, 5]\n}",
+            "highlightLines": [3, 7, 11, 15]
+          },
+          {
+            "type": "callout",
+            "variant": "tip",
+            "title": "Эквивалент Java цикла for",
+            "text": "Прогрессия `for (i in first..last step s)` эквивалентна `for (int i = first; i <= last; i += s)` в Java."
+          }
+        ]
+      },
+  
+      {
+        "type": "section",
+        "sectionNumber": "Итоги",
+        "title": "Сводка и шпаргалки"
+      },
+  
+      {
+        "type": "content",
+        "title": "Итоговая сводка: массивы",
+        "content": [
+          {
+            "type": "table",
+            "headers": ["Действие", "Код"],
+            "rows": [
+              ["Создание", "`intArrayOf(1, 2, 3)` / `IntArray(5)` / `IntArray(5) { it * 2 }`"],
+              ["Доступ", "`array[0]` / `array.first()` / `array.last()`"],
+              ["Размер", "`array.size`"],
+              ["Итерация", "`for (x in array)` / `for (i in array.indices)`"],
+              ["Сравнение", "`array1.contentEquals(array2)` (НЕ `==`)"],
+              ["Вывод", "`array.joinToString()` / `array2D.contentDeepToString()`"],
+              ["Сложение", "`array1 + array2` (создаёт новый массив)"],
+              ["Строковый массив", "`arrayOf(\"a\", \"b\", \"c\")` / `emptyArray<String>()`"]
+            ]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Итоговая сводка: коллекции",
+        "content": [
+          {
+            "type": "table",
+            "headers": ["", "Immutable", "Mutable", "Дубликаты", "Порядок"],
+            "rows": [
+              ["**List**", "`listOf()`", "`mutableListOf()`", "✅ Да", "✅ Да"],
+              ["**Set**", "`setOf()`", "`mutableSetOf()`", "❌ Нет", "❌ Нет"],
+              ["**Map**", "`mapOf()`", "`mutableMapOf()`", "❌ Ключи уникальны", "❌ Нет"]
+            ]
+          },
+          {
+            "type": "table",
+            "headers": ["Действие", "List / Set", "Map"],
+            "rows": [
+              ["Добавить", "`add()`, `addAll()`", "`put()`, `[key] = value`"],
+              ["Удалить", "`remove()`, `removeAt()`, `clear()`", "`remove(key)`, `clear()`"],
+              ["Получить", "`[index]`, `get(index)`", "`[key]`, `get(key)`"],
+              ["Проверить", "`contains()`, `in`", "`containsKey()`, `containsValue()`"],
+              ["Конвертация", "`.toMutableList()` / `.toList()`", "`.toMutableMap()` / `.toMap()`"]
+            ]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Итоговая сводка: интервалы и прогрессии",
+        "content": [
+          {
+            "type": "table",
+            "headers": ["Конструкция", "Описание", "Пример", "Результат"],
+            "rows": [
+              ["`a..b`", "Закрытый интервал [a, b]", "`1..5`", "1, 2, 3, 4, 5"],
+              ["`a until b`", "Полуоткрытый [a, b)", "`1 until 5`", "1, 2, 3, 4"],
+              ["`a downTo b`", "Обратный порядок [a, b]", "`5 downTo 1`", "5, 4, 3, 2, 1"],
+              ["`step n`", "Шаг итерации", "`1..10 step 3`", "1, 4, 7, 10"],
+              ["`in` / `!in`", "Проверка вхождения", "`3 in 1..5`", "`true`"],
+              ["`.toList()`", "Преобразование в список", "`(1..5).toList()`", "[1, 2, 3, 4, 5]"],
+              ["`.filter{}`", "Фильтрация", "`(1..10).filter { it % 2 == 0 }`", "[2, 4, 6, 8, 10]"]
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "info",
+            "title": "Типы прогрессий",
+            "text": "`IntProgression`, `LongProgression`, `CharProgression` — все реализуют `Iterable<N>`, поэтому поддерживают `map`, `filter`, `sum`, `toList` и другие функции коллекций."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Когда что использовать?",
+        "content": [
+          {
+            "type": "steps",
+            "steps": [
+              {
+                "title": "IntArray / DoubleArray и т.д.",
+                "text": "Когда нужен массив **примитивов** фиксированного размера. Максимальная производительность, минимальный расход памяти."
+              },
+              {
+                "title": "Array<T> / arrayOf()",
+                "text": "Когда нужен массив **объектов** (например, строк) фиксированного размера."
+              },
+              {
+                "title": "List / listOf()",
+                "text": "Когда нужна **неизменяемая** упорядоченная коллекция. Безопасно передавать между функциями."
+              },
+              {
+                "title": "MutableList / mutableListOf()",
+                "text": "Когда нужно **добавлять/удалять** элементы. Замена массивам, когда размер заранее неизвестен."
+              },
+              {
+                "title": "Set / MutableSet",
+                "text": "Когда важна **уникальность** элементов: теги, ID, посетители."
+              },
+              {
+                "title": "Map / MutableMap",
+                "text": "Когда нужно хранить **пары ключ-значение** с быстрым доступом по ключу."
+              },
+              {
+                "title": "Range / Progression",
+                "text": "Для **циклов** и **проверки вхождения**. Не хранит элементы в памяти — генерирует на лету."
+              }
+            ]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Сравнение: массив vs список vs множество",
+        "content": [
+          {
+            "type": "table",
+            "headers": ["Критерий", "Array", "List", "MutableList", "Set"],
+            "rows": [
+              ["Размер", "Фиксированный", "Фиксированный", "Динамический", "Динамический"],
+              ["Изменение элементов", "✅ По индексу", "❌", "✅ По индексу", "❌ (только add/remove)"],
+              ["Добавление элементов", "❌ (только `+=` с var)", "❌", "✅ `add()`", "✅ `add()`"],
+              ["Дубликаты", "✅", "✅", "✅", "❌"],
+              ["Доступ по индексу", "✅ O(1)", "✅ O(1)", "✅ O(1)", "❌"],
+              ["Поиск элемента", "O(n)", "O(n)", "O(n)", "O(1)"],
+              ["Память", "Минимум (примитивы)", "Больше", "Больше", "Больше"]
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "tip",
+            "title": "Правило большого пальца",
+            "text": "По умолчанию используйте **`List`** (неизменяемый). Переходите на `MutableList` только когда нужно модифицировать. Используйте `Array` только для производительности с примитивами."
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Частые ошибки",
+        "content": [
+          {
+            "type": "table",
+            "headers": ["❌ Ошибка", "✅ Правильно"],
+            "rows": [
+              ["`array1 == array2` для сравнения содержимого", "`array1.contentEquals(array2)`"],
+              ["`val list = listOf(...); list[0] = x`", "Используйте `mutableListOf()` или `toMutableList()`"],
+              ["`var list = listOf(...); list += element` в цикле", "`val list = mutableListOf(...); list.add(element)`"],
+              ["`var arr = arrayOf(...); arr += element` в цикле", "`val list = mutableListOf(...); list.add(element)`"],
+              ["Использование `MutableList` когда `List` достаточно", "Предпочитайте `listOf()` для безопасности"],
+              ["`map[key]` без проверки null", "`map[key] ?: defaultValue` или `map.getOrDefault(key, default)`"],
+              ["Забыли `in` при проверке вхождения", "`element in collection` вместо `collection.contains(element)`"]
+            ]
+          }
+        ]
+      },
+  
+      {
+        "type": "content",
+        "title": "Полезные ссылки",
+        "content": [
+          {
+            "type": "list",
+            "items": [
+              "**Массивы** — [hyperskill.org/learn/step/4564](https://hyperskill.org/learn/step/4564)",
+              "**Строковые массивы** — [hyperskill.org/learn/step/11477](https://hyperskill.org/learn/step/11477)",
+              "**List** — [hyperskill.org/learn/step/10730](https://hyperskill.org/learn/step/10730)",
+              "**MutableList** — [hyperskill.org/learn/step/11032](https://hyperskill.org/learn/step/11032)",
+              "**Set** — [hyperskill.org/learn/step/11290](https://hyperskill.org/learn/step/11290)",
+              "**MutableSet** — [hyperskill.org/learn/step/11897](https://hyperskill.org/learn/step/11897)",
+              "**Map операции** — [kotlinlang.org/docs/map-operations.html](https://kotlinlang.org/docs/map-operations.html)",
+              "**Ranges** — [kotlinlang.org/docs/ranges.html](https://kotlinlang.org/docs/ranges.html)",
+              "**Все коллекции** — [kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/index.html)"
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "success",
+            "title": "Главные выводы лекции",
+            "text": "Массивы — **фиксированный размер**, максимальная производительность. Коллекции (`List`, `Set`, `Map`) — **гибкость** и богатый API. Предпочитайте **immutable** варианты. Интервалы — **лёгкие** объекты для циклов и проверок, не хранят элементы в памяти."
+          }
+        ]
+      },
+  
+      {
+        "type": "title",
+        "title": "Спасибо за внимание!",
+        "subtitle": "Лекция 3. Массивы. Коллекции. Интервалы и прогрессии.",
+        "author": "Степанов Павел Валериевич"
+      }
+    ]
+  }

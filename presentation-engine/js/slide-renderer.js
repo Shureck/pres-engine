@@ -18,17 +18,22 @@ class SlideRenderer {
         slide.className = `slide slide-${slideData.type || 'content'}`;
         slide.dataset.index = index;
 
-        switch (slideData.type) {
-            case 'title':
-                this._renderTitleSlide(slide, slideData, meta);
-                break;
-            case 'section':
-                this._renderSectionSlide(slide, slideData);
-                break;
-            case 'content':
-            default:
-                this._renderContentSlide(slide, slideData);
-                break;
+        try {
+            switch (slideData.type) {
+                case 'title':
+                    this._renderTitleSlide(slide, slideData, meta);
+                    break;
+                case 'section':
+                    this._renderSectionSlide(slide, slideData);
+                    break;
+                case 'content':
+                default:
+                    this._renderContentSlide(slide, slideData);
+                    break;
+            }
+        } catch (err) {
+            console.error('Slide render error at index', index, err);
+            this._renderFallbackSlide(slide, slideData, index);
         }
 
         if (slideData.type !== 'title') {
@@ -39,6 +44,28 @@ class SlideRenderer {
         }
 
         return slide;
+    }
+
+    _renderFallbackSlide(slide, slideData, index) {
+        const heading = document.createElement('h2');
+        heading.className = 'slide-heading';
+        heading.textContent = slideData.title || slideData.sectionTitle || `Слайд ${index + 1}`;
+        slide.appendChild(heading);
+
+        const body = document.createElement('div');
+        body.className = 'slide-body';
+
+        const msg = document.createElement('div');
+        msg.className = 'content-callout callout-error';
+        msg.innerHTML = `
+            <span class="callout-icon">⚠️</span>
+            <div class="callout-content">
+                <div class="callout-title">Ошибка рендера слайда</div>
+                <div class="callout-text">Откройте консоль браузера для деталей.</div>
+            </div>
+        `;
+        body.appendChild(msg);
+        slide.appendChild(body);
     }
 
     _renderTitleSlide(slide, data, meta) {
@@ -72,17 +99,53 @@ class SlideRenderer {
     }
 
     _renderSectionSlide(slide, data) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'section-wrapper';
+
         if (data.sectionNumber) {
             const num = document.createElement('div');
-            num.className = 'section-number slide-animate';
-            num.textContent = data.sectionNumber;
-            slide.appendChild(num);
+            num.className = 'section-number';
+
+            const parsed = this._parseSectionNumber(data.sectionNumber);
+            if (parsed) {
+                const label = document.createElement('span');
+                label.className = 'section-number-label';
+                label.textContent = parsed.label;
+
+                const value = document.createElement('span');
+                value.className = 'section-number-value';
+                value.textContent = parsed.value;
+
+                num.appendChild(label);
+                num.appendChild(value);
+            } else {
+                num.textContent = data.sectionNumber;
+            }
+
+            wrapper.appendChild(num);
         }
 
         const title = document.createElement('h2');
-        title.className = 'section-title slide-animate';
-        title.innerHTML = this._processInlineMarkup(data.title || '');
-        slide.appendChild(title);
+        title.className = 'section-title';
+        title.innerHTML = this._processInlineMarkup(data.title || data.sectionTitle || '');
+        wrapper.appendChild(title);
+
+        slide.appendChild(wrapper);
+    }
+
+    _parseSectionNumber(sectionNumber) {
+        const raw = String(sectionNumber || '').trim();
+        if (!raw) return null;
+
+        const match = raw.match(/^(.*?)(\d+)\s*$/);
+        if (!match) return null;
+
+        const label = match[1].trim();
+        const value = match[2];
+
+        if (!label || !value) return null;
+
+        return { label, value };
     }
 
     _renderContentSlide(slide, data) {
